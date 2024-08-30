@@ -81,7 +81,7 @@ const PaymentVerify = () => {
           <table className="w-full min-w-[640px] table-auto">
             <thead>
               <tr>
-                {["Salesman Name", "Customer Name", "Amount", "Date","Status"].map((el) => (
+                 {["SNo","Salesman Name", "Customer Name", "Amount", "Date","Status"].map((el) => (
                   <th
                     key={el}
                     className="border-b border-blue-gray-50 py-3 px-5 text-left"
@@ -107,6 +107,15 @@ const PaymentVerify = () => {
 
                 return (
                   <tr key={_id}>
+                  <td className={className}>
+                  <Typography
+                    variant="small"
+                    color="blue-gray"
+                    className="font-semibold"
+                  >
+                    {(currentPage - 1) * PAGE_SIZE + key + 1}
+                  </Typography>
+                  </td>
                     <td className={className}>
                       <Typography
                         variant="small"

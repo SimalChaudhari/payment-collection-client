@@ -7,6 +7,7 @@ import customerReducer from './reducer/customerReducer';
 import salesmanReducer from './reducer/salesmanReducer';
 import paymentReducer from './reducer/paymentReducer';
 import homeReducer from './reducer/homeReducer';
+import reportReducer from './reducer/reportReducer';
 
 
 const rootReducer = combineReducers({
@@ -15,6 +16,7 @@ const rootReducer = combineReducers({
     customerReducer,
     salesmanReducer,
     paymentReducer,
+    reportReducer,
     collectionReducer
 })
 

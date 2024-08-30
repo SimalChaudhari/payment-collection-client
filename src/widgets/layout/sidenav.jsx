@@ -8,6 +8,7 @@ import {
   Typography,
 } from "@material-tailwind/react";
 import { useMaterialTailwindController, setOpenSidenav } from "@/context";
+import { useState, useEffect } from "react";
 
 // Utility function to format user role
 const getFormattedRole = () => {
@@ -16,15 +17,18 @@ const getFormattedRole = () => {
     const userRole = userData.user.role;
     return userRole.replace(/^\w/, c => c.toUpperCase());
   }
-  return 'Admin' || "Salesman" || "Customer"; // Default role if userData is not available
+  return 'Admin'; // Default role if userData is not available
 };
 
-// Calculate formattedRole outside the component
-const formattedRole = getFormattedRole();
-
-export function Sidenav({ brandImg, brandName, routes }) {
+export function Sidenav({ brandImg, routes }) {
   const [controller, dispatch] = useMaterialTailwindController();
   const { sidenavColor, sidenavType, openSidenav } = controller;
+  const [brandName, setBrandName] = useState('');
+
+  useEffect(() => {
+    // Set the brand name based on the user's role
+    setBrandName(`${getFormattedRole()} Panel`);
+  }, []);
 
   const sidenavTypes = {
     dark: "bg-gradient-to-br from-gray-800 to-gray-900",
@@ -109,12 +113,10 @@ export function Sidenav({ brandImg, brandName, routes }) {
 
 Sidenav.defaultProps = {
   brandImg: "/img/logo-ct.png",
-  brandName: `${formattedRole} Panel`,
 };
 
 Sidenav.propTypes = {
   brandImg: PropTypes.string,
-  brandName: PropTypes.string,
   routes: PropTypes.arrayOf(PropTypes.object).isRequired,
 };
 

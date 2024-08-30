@@ -8,6 +8,7 @@ import { editCustomer ,customer} from '@/store/action/customer.action';
 const EditCustomerDialog = ({ open, onClose, customerData }) => {
   const dispatch = useDispatch();
 
+  console.log(customerData)
   const validationSchema = Yup.object({
     name: Yup.string().required('Name is required'),
     email: Yup.string().email('Invalid email address').required('Email is required'),

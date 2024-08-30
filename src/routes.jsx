@@ -17,6 +17,7 @@ import AdminProfile from "./pages/Admin/profile/adminProfile";
 import History from "./pages/Customer/History/history";
 import CustomerDashboard from "./pages/Customer/Dashboard/customerDashboard";
 import PaymentVerify from "./pages/Customer/PaymentVerify/paymentVerify";
+import ReportData from "./pages/Admin/report/report";
 
 
 const icon = {
@@ -51,25 +52,18 @@ export const routes = [
         path: "/payment",
         element: <Payment />,
       },
+
+      {
+        icon: <InformationCircleIcon {...icon} />,
+        name: "Report",
+        path: "/report",
+        element: <ReportData />,
+      },
       {
         icon: <UserCircleIcon {...icon} />,
         name: "profile",
         path: "/profile",
         element: <AdminProfile />,
-      },
-      
-
-      {
-        icon: <TableCellsIcon {...icon} />,
-        name: "tables",
-        path: "/tables",
-        element: <Tables />,
-      },
-      {
-        icon: <InformationCircleIcon {...icon} />,
-        name: "notifications",
-        path: "/notifications",
-        element: <Notifications />,
       },
     ],
   },

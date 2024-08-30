@@ -1,0 +1,307 @@
+import React, { useEffect, useState } from 'react';
+import {
+  Card,
+  CardHeader,
+  CardBody,
+  Typography,
+  Select,
+  Option
+} from "@material-tailwind/react";
+import { useDispatch, useSelector } from 'react-redux';
+import { reportSummary } from '@/store/action/report.action';
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
+
+const PAGE_SIZE = 5;
+
+const Report = () => {
+  const [currentPage, setCurrentPage] = useState(1);
+  const dispatch = useDispatch();
+  const reportData = useSelector((state) => state.reportReducer.reportSummary);
+  const customer = reportData.map(report => report.customerName);
+ 
+  const salesman = reportData.map(report => report.salesman);
+
+  const [selectedCustomer, setSelectedCustomer] = useState('');
+  const [selectedSalesman, setSelectedSalesman] = useState('');
+  const [startDate, setStartDate] = useState(null);
+  const [endDate, setEndDate] = useState(null);
+
+
+  useEffect(() => {
+    const fetchData = async () => {
+      await dispatch(reportSummary());
+    };
+
+    fetchData();
+  }, [dispatch]);
+
+
+  const handleFilter = () => {
+    let filteredData = reportData;
+
+    if (selectedCustomer) {
+      filteredData = filteredData.filter(report => report.customerName?.name === selectedCustomer);
+    }
+    
+    if (selectedSalesman) {
+      filteredData = filteredData.filter(report => report.salesman?.name === selectedSalesman);
+    }
+
+    if (startDate && endDate) {
+      filteredData = filteredData.filter(report => {
+        const reportDate = new Date(report.date);
+        return reportDate >= startDate && reportDate <= endDate;
+      });
+    }
+
+    return filteredData;
+  };
+
+  const filteredData = handleFilter();
+ 
+  const totalPages = Math.ceil(filteredData.length / PAGE_SIZE);
+
+  const currentData = filteredData.slice(
+    (currentPage - 1) * PAGE_SIZE,
+    currentPage * PAGE_SIZE
+  );
+  const formatDateTime = (isoDate) => {
+    const dateObj = new Date(isoDate);
+    return `${dateObj.toLocaleDateString()} ${dateObj.toLocaleTimeString()}`;
+  };
+
+
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  };
+
+  const handlePrevPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
+
+  const handleNextPage = () => {
+    if (currentPage < totalPages) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
+
+  const generatePageNumbers = () => {
+    const pages = [];
+    const range = 2; // Number of page buttons before and after current page
+
+    for (let i = 1; i <= totalPages; i++) {
+      if (i <= range || i > totalPages - range || (i >= currentPage - range && i <= currentPage + range)) {
+        pages.push(i);
+      } else if (i === range + 1 || i === totalPages - range) {
+        pages.push('...');
+      }
+    }
+    return pages;
+  };
+
+  return (
+    <div className="mt-12 mb-8 flex flex-col gap-12">
+      <Card>
+        <CardHeader variant="gradient" color="gray" className="mb-8 p-6 flex justify-between items-center">
+          <Typography variant="h6" color="white">
+            Reports
+          </Typography>
+        </CardHeader>
+        <div className="p-4 flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4">
+        <div className="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4 mt-1">
+        <Select
+        label="Select Customer"
+        size="md"
+        value={selectedCustomer}
+        onChange={(e) => setSelectedCustomer(e)}
+      >
+      
+        {reportData?.map((report, index) => (
+          <Option key={index} value={report.customerName?.name}>
+            {report.customerName?.name}
+          </Option>
+        ))}
+      </Select>
+      <Select
+        label="Select Salesman"
+        size="md"
+        value={selectedSalesman}
+        onChange={(e) => setSelectedSalesman(e)}
+      >            
+      <Option value="">All Salesmen</Option>
+        {reportData?.map((report, index) => (
+          <Option key={index} value={report.salesman?.name}>
+            {report.salesman?.name}
+          </Option>
+        ))}
+      </Select>
+        </div>
+        <div id="date-range-picker" className="flex items-center">
+        <div className="relative">
+          <div className="absolute z-20 inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
+            <svg
+              className="w-4 h-4 text-gray-500 dark:text-gray-400"
+              aria-hidden="true"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="currentColor"
+              viewBox="0 0 20 20"
+            >
+              <path d="M20 4a2 2 0 0 0-2-2h-2V1a1 1 0 0 0-2 0v1h-3V1a1 1 0 0 0-2 0v1H6V1a1 1 0 0 0-2 0v1H2a2 2 0 0 0-2 2v2h20V4ZM0 18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8H0v10Zm5-8h10a1 1 0 0 1 0 2H5a1 1 0 0 1 0-2Z" />
+            </svg>
+          </div>
+          <DatePicker
+          selected={startDate}
+          onChange={(date) => setStartDate(date)}
+          selectsStart
+          startDate={startDate}
+          endDate={endDate}
+            className=" border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+            placeholderText="Select date start"
+          />
+        </div>
+        <span className="mx-4 text-gray-500">to</span>
+        <div className="relative">
+          <div className="absolute z-20 inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
+            <svg
+              className="w-4 h-4 text-gray-500 dark:text-gray-400"
+              aria-hidden="true"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="currentColor"
+              viewBox="0 0 20 20"
+            >
+              <path d="M20 4a2 2 0 0 0-2-2h-2V1a1 1 0 0 0-2 0v1h-3V1a1 1 0 0 0-2 0v1H6V1a1 1 0 0 0-2 0v1H2a2 2 0 0 0-2 2v2h20V4ZM0 18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8H0v10Zm5-8h10a1 1 0 0 1 0 2H5a1 1 0 0 1 0-2Z" />
+            </svg>
+          </div>
+          <DatePicker
+          selected={endDate}
+          onChange={(date) => setEndDate(date)}
+          selectsEnd
+          startDate={startDate}
+          endDate={endDate}
+          minDate={startDate}
+            className="border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+            placeholderText="Select date end"
+          />
+        </div>
+      </div>  
+      </div>
+
+        <CardBody className="overflow-x-scroll px-0 pt-0 pb-2">
+          {currentData.length === 0 ? (
+            <Typography className="text-center py-4">No data found</Typography>
+          ) : (
+            <table className="w-full min-w-[640px] table-auto">
+              <thead>
+                <tr>
+                  {["SNo","Salesman Name", "Customer Name", "Amount", "Date"].map((el) => (
+                    <th
+                      key={el}
+                      className="border-b border-blue-gray-50 py-3 px-5 text-left"
+                    >
+                      <Typography
+                        variant="small"
+                        className="text-[11px] font-bold uppercase text-blue-gray-400"
+                      >
+                        {el}
+                      </Typography>
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {currentData.map((payment, key) => {
+                  const { _id, salesman, customerName, amount, date } = payment;
+                  const className = `py-3 px-5 ${
+                    key === currentData.length - 1
+                      ? ""
+                      : "border-b border-blue-gray-50"
+                  }`;
+
+                  return (
+                    <tr key={_id}>
+                      <td className={className}>
+                        <Typography
+                          variant="small"
+                          color="blue-gray"
+                          className="font-semibold"
+                        >
+                          {(currentPage - 1) * PAGE_SIZE + key + 1}
+                        </Typography>
+                      </td>
+                      <td className={className}>
+                        <Typography
+                          variant="small"
+                          color="blue-gray"
+                          className="font-semibold"
+                        >
+                          {salesman?.name || "NA"}
+                        </Typography>
+                      </td>
+                      <td className={className}>
+                        <Typography className="text-xs font-normal text-blue-gray-500">
+                          {customerName?.name || "NA"}
+                        </Typography>
+                      </td>
+                      <td className={className}>
+                        <Typography className="text-xs font-normal text-blue-gray-500">
+                          {amount}
+                        </Typography>
+                      </td>
+                      <td className={className}>
+                        <Typography className="text-xs font-semibold text-blue-gray-600">
+                          {formatDateTime(date)}
+                        </Typography>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          )}
+        </CardBody>
+        <div className="flex flex-wrap justify-between items-center p-4">
+          <button
+            onClick={handlePrevPage}
+            disabled={currentPage === 1}
+            className="px-4 py-2 bg-gray-300 text-white rounded-lg disabled:opacity-50"
+          >
+            Previous
+          </button>
+          <div className="flex flex-wrap gap-2 overflow-x-auto">
+            {generatePageNumbers().map((page, index) => 
+              page === '...' ? (
+                <span key={index} className="px-4 py-2 rounded-lg bg-gray-200 text-gray-700">
+                  {page}
+                </span>
+              ) : (
+                <button
+                  key={page}
+                  onClick={() => handlePageChange(page)}
+                  className={`px-4 py-2 rounded-lg ${
+                    currentPage === page
+                      ? 'bg-blue-500 text-white'
+                      : 'bg-gray-200 text-gray-700'
+                  }`}
+                >
+                  {page}
+                </button>
+              )
+            )}
+          </div>
+          <button
+            onClick={handleNextPage}
+            disabled={currentPage === totalPages}
+            className="px-4 py-2 bg-gray-300 text-white rounded-lg disabled:opacity-50"
+          >
+            Next
+          </button>
+        </div>
+      </Card>
+    </div>
+  );
+};
+
+export default Report;

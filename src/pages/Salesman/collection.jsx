@@ -122,7 +122,7 @@ const Collection = () => {
           <table className="w-full min-w-[640px] table-auto">
             <thead>
               <tr>
-                {["Customer Name", "Amount", "Date", "Actions"].map((el) => (
+                {["SNo","Customer Name", "Amount", "Date", "Actions"].map((el) => (
                   <th
                     key={el}
                     className="border-b border-blue-gray-50 py-3 px-5 text-left"
@@ -148,6 +148,15 @@ const Collection = () => {
 
                 return (
                   <tr key={_id}>
+                  <td className={className}>
+                  <Typography
+                    variant="small"
+                    color="blue-gray"
+                    className="font-semibold"
+                  >
+                    {(currentPage - 1) * PAGE_SIZE + key + 1}
+                  </Typography>
+                  </td>
                     <td className={className}>
                       <Typography
                         variant="small"

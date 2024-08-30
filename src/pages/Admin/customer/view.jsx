@@ -13,8 +13,6 @@ import DeleteCustomerDialog from '@/components/customer/DeleteCustomerDialog';
 import { customer } from '@/store/action/customer.action';
 import { useDispatch, useSelector } from 'react-redux';
 
-
-
 const PAGE_SIZE = 5;
 
 const View = () => {
@@ -25,7 +23,7 @@ const View = () => {
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [selectedCustomerId, setSelectedCustomerId] = useState(null);
 
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
 
   const customersData = useSelector((state) => state.customerReducer.customer);
 
@@ -33,10 +31,10 @@ const View = () => {
     const fetchData = async () => {
       await dispatch(customer());
     };
-  
+
     fetchData();
-  }, []); // Empty dependency array ensures it runs only once when the component mounts.
-  
+  }, [dispatch]);
+
   const totalPages = Math.ceil(customersData.length / PAGE_SIZE);
 
   const currentData = customersData.slice(
@@ -84,15 +82,12 @@ const View = () => {
   };
 
   const handleAddCustomer = (newCustomer) => {
-    // Logic to add the new customer
     console.log('New Customer:', newCustomer);
     handleCloseAddDialog();
   };
 
   const handleEditCustomer = (updatedCustomer) => {
-    // Logic to update the customer by ID
     console.log('Updated Customer:', updatedCustomer);
-    // handleCloseEditDialog();
   };
 
   const handleDeleteCustomer = () => {
@@ -123,7 +118,7 @@ const View = () => {
           <table className="w-full min-w-[640px] table-auto">
             <thead>
               <tr>
-                {["Name", "Email", "Mobile", "Actions"].map((el) => (
+                {["SNo", "Name", "Email", "Mobile", "Actions"].map((el) => (
                   <th
                     key={el}
                     className="border-b border-blue-gray-50 py-3 px-5 text-left"
@@ -155,6 +150,15 @@ const View = () => {
                         color="blue-gray"
                         className="font-semibold"
                       >
+                        {(currentPage - 1) * PAGE_SIZE + key + 1}
+                      </Typography>
+                    </td>
+                    <td className={className}>
+                      <Typography
+                        variant="small"
+                        color="blue-gray"
+                        className="font-semibold"
+                      >
                         {name}
                       </Typography>
                     </td>
@@ -168,7 +172,6 @@ const View = () => {
                         {mobile}
                       </Typography>
                     </td>
-                  
                     <td className={className}>
                       <div className="flex gap-2">
                         <Button
@@ -222,13 +225,12 @@ const View = () => {
       <AddCustomerDialog
         open={dialogOpen}
         onClose={handleCloseAddDialog}
-       />
+      />
 
       <EditCustomerDialog
         open={editDialogOpen}
         onClose={handleCloseEditDialog}
         customerData={getCustomerById(selectedCustomerId)}
-    
       />
 
       <ViewCustomerDialog
