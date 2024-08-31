@@ -57,12 +57,12 @@ const AddCollectionDialog = ({ open, onClose }) => {
     },
     validationSchema,
     onSubmit: async (values, { resetForm }) => {
-      console.log("🚀 ~ onSubmit: ~ values:", values)
       const success = await dispatch(addCollection({ ...values }));
       if (success) {
         resetForm(); // Clear the form on success
         onClose(); // Close dialog if collection was added successfully
         fetchData();
+        setSelectedCustomerName('')
       }
     },
   });

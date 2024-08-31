@@ -66,17 +66,13 @@ export const addCollection = (newCollection) => {
     return async (dispatch) => {
       try {
         const token = localStorage.getItem('token');
-       const response = await axiosInstance.delete(`/collected-data/delete/${userId}`, {
+        await axiosInstance.delete(`/collected-data/delete/${userId}`, {
           headers: {
          
             Authorization: `Bearer ${token}`,
           },
         })
-        dispatch({
-          type: 'COLLECTION_LIST',
-          payload: response.data, // Assuming response contains the collection data
-        });
-      
+  
         return true;
       } catch (error) {
         toast.error(error.response?.data?.message || "Something went wrong");
