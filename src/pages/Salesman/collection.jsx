@@ -5,6 +5,7 @@ import {
   CardBody,
   Typography,
   Button,
+  Chip,
 } from "@material-tailwind/react";
 import AddCollectionDialog from '@/components/collection/AddCollectionDialog';
 import EditCollectionDialog from '@/components/collection/EditCollectionDialog';
@@ -28,6 +29,7 @@ const Collection = () => {
   const dispatch = useDispatch()
 
   const collectionData = useSelector((state) => state.collectionReducer.collectionList)
+  console.log(collectionData)
 
   useEffect(() => {
     const fetchData = async () => {
@@ -126,7 +128,7 @@ const Collection = () => {
           <table className="w-full min-w-[640px] table-auto">
             <thead>
               <tr>
-                {["SNo","Customer Name", "Amount", "Date", "Actions"].map((el) => (
+                {["SNo","Customer Name", "Amount", "Date","Status", "Actions"].map((el) => (
                   <th
                     key={el}
                     className="border-b border-blue-gray-50 py-3 px-5 text-left"
@@ -143,7 +145,7 @@ const Collection = () => {
             </thead>
             <tbody>
               {currentData.map((collection, key) => {
-                const { _id, customerName, amount, date } = collection;
+                const { _id, customerName, amount,customerVerify, date } = collection;
                 const className = `py-3 px-5 ${
                   key === currentData.length - 1
                     ? ""
@@ -180,6 +182,15 @@ const Collection = () => {
                         {new Date(date).toISOString().split('T')[0]}
                       </Typography>
                     </td>
+                    <td className={className}>
+                        <Chip
+                          variant="gradient"
+                          color={customerVerify === "Accepted" ? "green" : customerVerify === "Rejected" ? "red" : "gray"}
+                          value={customerVerify === "Accepted" ? "Accepted" : customerVerify === "Rejected" ? "Rejected" : "Pending"}
+                          className="py-0.5 px-2 text-[11px] font-medium w-fit"
+                        />
+                      </td>
+                  
                   
                     <td className={className}>
                       <div className="flex gap-2">
@@ -191,7 +202,7 @@ const Collection = () => {
                           View
                         </Button>
                         <Button
-                          color="light-blue"
+                          color="green"
                           size="sm"
                           onClick={() => handleOpenEditDialog(_id)}
                         >

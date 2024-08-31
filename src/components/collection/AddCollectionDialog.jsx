@@ -129,7 +129,7 @@ const AddCollectionDialog = ({ open, onClose }) => {
         </form>
       </DialogContent>
       <DialogActions>
-        <Button onClick={onClose} style={{ backgroundColor: 'green', color: '#fff' }}>
+      <Button onClick={onClose} color="secondary" variant="outlined">
           Cancel
         </Button>
         <Button

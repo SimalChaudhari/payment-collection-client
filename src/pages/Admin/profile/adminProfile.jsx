@@ -17,6 +17,8 @@ import { editCustomer } from "@/store/action/customer.action";
 
 export function AdminProfile() {
     const [isEditingPersonal, setIsEditingPersonal] = useState(false);
+    const [loader, setIsLoader] = useState(false);
+
     const emailData = useSelector((state) => state.authReducer?.user?.user?.email);
     const userData = useSelector((state) => state.authReducer?.user?.user);
 
@@ -93,6 +95,7 @@ export function AdminProfile() {
                 ...values,
                 role: userData.role, // Directly set role to "admin"
             };
+            setIsLoader(true)
             const success = await dispatch(editCustomer(userData._id, user));
             if (success) {
                 // Handle success, e.g., show a success message or redirect
@@ -111,6 +114,7 @@ export function AdminProfile() {
                 const updatedUserData = { ...userData, ...user };
                 localStorage.setItem('userData', JSON.stringify({ user: updatedUserData }));
                 toast.success('Personal information updated');
+                setIsLoader(false)
             }
         },
     });
@@ -201,7 +205,7 @@ export function AdminProfile() {
                                             helperText={formikAdmin.touched.email && formikAdmin.errors.email}
                                         />
                                         <Button type="submit" variant="contained" color="primary">
-                                            Save Changes
+                                           {loader ? "Loading..." : "Save Changes"} 
                                         </Button>
                                     </>
                                 ) : (

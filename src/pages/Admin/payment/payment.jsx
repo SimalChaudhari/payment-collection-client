@@ -3,7 +3,7 @@ import {
   Card,
   CardHeader,
   CardBody,
-  Typography,Chip
+  Typography, Chip
 } from "@material-tailwind/react";
 import { paymentHistory } from '@/store/action/payment.action';
 import { useDispatch, useSelector } from 'react-redux';
@@ -23,7 +23,7 @@ const Payment = () => {
     const fetchData = async () => {
       await dispatch(paymentHistory());
     };
-  
+
     fetchData();
   }, []); // Empty dependency array ensures it runs only once when the component mounts.
 
@@ -31,14 +31,14 @@ const Payment = () => {
     const dateObj = new Date(isoDate);
     return `${dateObj.toLocaleDateString()} ${dateObj.toLocaleTimeString()}`;
   };
-  
+
   const totalPages = Math.ceil(paymentsData.length / PAGE_SIZE);
 
   const currentData = paymentsData.slice(
     (currentPage - 1) * PAGE_SIZE,
     currentPage * PAGE_SIZE
   );
- 
+
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
   };
@@ -58,82 +58,82 @@ const Payment = () => {
           {currentData.length === 0 ? (
             <Typography className="text-center py-4">No data found</Typography>
           ) : (
-          <table className="w-full min-w-[640px] table-auto">
-            <thead>
-              <tr>
-              {["SNo","Salesman Name", "Customer Name", "Amount", "Date","Status"].map((el) => (
-                  <th
-                    key={el}
-                    className="border-b border-blue-gray-50 py-3 px-5 text-left"
-                  >
-                    <Typography
-                      variant="small"
-                      className="text-[11px] font-bold uppercase text-blue-gray-400"
+            <table className="w-full min-w-[640px] table-auto">
+              <thead>
+                <tr>
+                  {["SNo", "Salesman Name", "Customer Name", "Amount", "Date", "Status"].map((el) => (
+                    <th
+                      key={el}
+                      className="border-b border-blue-gray-50 py-3 px-5 text-left"
                     >
-                      {el}
-                    </Typography>
-                  </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {currentData?.map((payment, key) => {
-                const { _id, salesman,customerName, amount, date,customerVerify } = payment;
-                const className = `py-3 px-5 ${
-                  key === currentData.length - 1
-                    ? ""
-                    : "border-b border-blue-gray-50"
-                }`;
-
-                return (
-                  <tr key={_id}>
-                  <td className={className}>
-                  <Typography
-                    variant="small"
-                    color="blue-gray"
-                    className="font-semibold"
-                  >
-                    {(currentPage - 1) * PAGE_SIZE + key + 1}
-                  </Typography>
-                </td>
-                    <td className={className}>
                       <Typography
                         variant="small"
-                        color="blue-gray"
-                        className="font-semibold"
+                        className="text-[11px] font-bold uppercase text-blue-gray-400"
                       >
-                        {salesman?.name || "NA"}
+                        {el}
                       </Typography>
-                    </td>
-                    <td className={className}>
-                      <Typography className="text-xs font-normal text-blue-gray-500">
-                        {customerName?.name || "NA"}
-                      </Typography>
-                    </td>
-                    <td className={className}>
-                      <Typography className="text-xs font-normal text-blue-gray-500">
-                        {amount}
-                      </Typography>
-                    </td>
-                    <td className={className}>
-                      <Typography className="text-xs font-semibold text-blue-gray-600">
-                        {formatDateTime(date)}
-                      </Typography>
-                    </td>
-                    <td className={className}>
-                    <Chip
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {currentData?.map((payment, key) => {
+                  const { _id, salesman, customerName, amount, date, customerVerify } = payment;
+                  const className = `py-3 px-5 ${key === currentData.length - 1
+                      ? ""
+                      : "border-b border-blue-gray-50"
+                    }`;
+
+                  return (
+                    <tr key={_id}>
+                      <td className={className}>
+                        <Typography
+                          variant="small"
+                          color="blue-gray"
+                          className="font-semibold"
+                        >
+                          {(currentPage - 1) * PAGE_SIZE + key + 1}
+                        </Typography>
+                      </td>
+                      <td className={className}>
+                        <Typography
+                          variant="small"
+                          color="blue-gray"
+                          className="font-semibold"
+                        >
+                          {salesman?.name || "NA"}
+                        </Typography>
+                      </td>
+                      <td className={className}>
+                        <Typography className="text-xs font-normal text-blue-gray-500">
+                          {customerName?.name || "NA"}
+                        </Typography>
+                      </td>
+                      <td className={className}>
+                        <Typography className="text-xs font-normal text-blue-gray-500">
+                          {amount}
+                        </Typography>
+                      </td>
+                      <td className={className}>
+                        <Typography className="text-xs font-semibold text-blue-gray-600">
+                          {formatDateTime(date)}
+                        </Typography>
+                      </td>
+                      <td className={className}>
+                        <Chip
                           variant="gradient"
-                          color={customerVerify === true  ? "green" : "red"}
-                          value={customerVerify === true  ? "Success" : "Pending"}
+                          color={customerVerify === "Accepted" ? "green" : customerVerify === "Rejected" ? "red" : "gray"}
+                          value={customerVerify === "Accepted" ? "Accepted" : customerVerify === "Rejected" ? "Rejected" : "Pending"}
                           className="py-0.5 px-2 text-[11px] font-medium w-fit"
                         />
-                  </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
-                )}
+                      </td>
+
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          )}
         </CardBody>
         {currentData.length === 0 ? null : (
           <div className="flex flex-col md:flex-row justify-between items-center px-6 py-4">

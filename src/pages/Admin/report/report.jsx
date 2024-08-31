@@ -85,35 +85,46 @@ const Report = () => {
             Reports
           </Typography>
         </CardHeader>
-        <div className="p-4 flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4">
-          <div className="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4 mt-1">
-            <Select
-              label="Select Customer"
-              size="md"
-              value={selectedCustomer}
-              onChange={(e) => setSelectedCustomer(e)}
-            >
+                <div className="p-4 flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4">
+  {/* Customer and Salesman Selection Dropdown */}
+          <div className="flex flex-col md:flex-row md:items-center space-y-4 md:space-y-0 md:space-x-4 w-full">
+            <div className="relative w-full md:max-w-[200px]">
+              <select
+                value={selectedCustomer}
+                onChange={(e) => setSelectedCustomer(e.target.value)}
+                className="peer h-full w-full rounded-md border border-gray-300 bg-transparent px-3 py-2.5 text-sm text-gray-700 placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+              >
+                <option value="">All Customers</option>
+                {reportData.map((report, index) => (
+                  <option key={index} value={report.customerName?.name}>
+                    {report.customerName?.name}
+                  </option>
+                ))}
+              </select>
+              <label className="pointer-events-none absolute left-0 -top-1.5 flex h-full w-full select-none text-[11px] font-normal leading-tight text-blue-gray-400 transition-all peer-placeholder-shown:text-sm peer-placeholder-shown:leading-[3.75] peer-placeholder-shown:text-blue-gray-500 peer-focus:text-[11px] peer-focus:leading-tight peer-focus:text-gray-900">
+                {/* Add any necessary label content here */}
+              </label>
+            </div>
 
-              {reportData?.map((report, index) => (
-                <Option key={index} value={report.customerName?.name}>
-                  {report.customerName?.name}
-                </Option>
-              ))}
-            </Select>
-            <Select
-              label="Select Salesman"
-              size="md"
-              value={selectedSalesman}
-              onChange={(e) => setSelectedSalesman(e)}
-            >
-              <Option value="">All Salesmen</Option>
-              {reportData?.map((report, index) => (
-                <Option key={index} value={report.salesman?.name}>
-                  {report.salesman?.name}
-                </Option>
-              ))}
-            </Select>
-          </div>
+            <div className="relative w-full md:max-w-[200px]">
+              <select
+                value={selectedSalesman}
+                onChange={(e) => setSelectedSalesman(e.target.value)}
+                className="peer h-full w-full rounded-md border border-gray-300 bg-transparent px-3 py-2.5 text-sm text-gray-700 placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+              >
+                <option value="">All Salesmans</option>
+                {reportData.map((report, index) => (
+                  <option key={index} value={report.salesman?.name}>
+                    {report.salesman?.name}
+                  </option>
+                ))}
+              </select>
+              <label className="pointer-events-none absolute left-0 -top-1.5 flex h-full w-full select-none text-[11px] font-normal leading-tight text-blue-gray-400 transition-all peer-placeholder-shown:text-sm peer-placeholder-shown:leading-[3.75] peer-placeholder-shown:text-blue-gray-500 peer-focus:text-[11px] peer-focus:leading-tight peer-focus:text-gray-900">
+                {/* Add any necessary label content here */}
+              </label>
+            </div>
+
+          {/* Date Range Picker */}
           <div id="date-range-picker" className="flex items-center">
             <div className="relative">
               <div className="absolute z-20 inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
@@ -162,7 +173,11 @@ const Report = () => {
               />
             </div>
           </div>
-        </div>
+          </div>
+
+          </div>
+
+
 
         <CardBody className="overflow-x-auto px-0 pt-0 pb-2">
           {currentData.length === 0 ? (

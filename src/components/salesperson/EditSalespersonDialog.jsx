@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Dialog, DialogTitle, DialogContent, DialogActions, Button, TextField } from '@mui/material';
+import { Dialog, DialogTitle, DialogContent, DialogActions, Button, TextField,CircularProgress } from '@mui/material';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { useDispatch } from 'react-redux';
@@ -87,7 +87,13 @@ const EditSalespersonDialog = ({ open, onClose, salesmanData }) => {
 
       </DialogContent>
       <DialogActions>
-        <Button onClick={formik.handleSubmit} color="primary" variant="contained">Save</Button>
+        <Button onClick={formik.handleSubmit} color="primary" variant="contained">
+        {formik.isSubmitting ? (
+            <CircularProgress size={24} style={{ color: '#fff' }} />
+          ) : (
+            'Update'
+          )}
+        </Button>
         <Button onClick={onClose} color="secondary" variant="outlined">Cancel</Button>
       </DialogActions>
     </Dialog>

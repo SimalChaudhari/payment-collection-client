@@ -9,7 +9,7 @@ import {
   Select,
   MenuItem,
   InputLabel,
-  FormControl
+  FormControl,CircularProgress
 } from '@mui/material';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
@@ -121,12 +121,18 @@ const EditCollectionDialog = ({ open, onClose, collectionData }) => {
         />
       </DialogContent>
       <DialogActions>
-        <Button onClick={formik.handleSubmit} color="primary" variant="contained">
-          Save
-        </Button>
-        <Button onClick={onClose} color="secondary" variant="outlined">
+      <Button onClick={onClose} color="secondary" variant="outlined">
           Cancel
         </Button>
+        
+        <Button onClick={formik.handleSubmit} color="primary" variant="contained">
+        {formik.isSubmitting ? (
+            <CircularProgress size={24} style={{ color: '#fff' }} />
+          ) : (
+            'Update'
+          )}
+        </Button>
+       
       </DialogActions>
     </Dialog>
   );

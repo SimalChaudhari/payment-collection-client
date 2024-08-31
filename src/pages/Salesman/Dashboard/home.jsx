@@ -8,6 +8,7 @@ import {
 } from "@heroicons/react/24/solid";
 import { useDispatch, useSelector } from "react-redux";
 import { collectionCount } from "@/store/action/home.action";
+import { Helmet } from 'react-helmet-async';
 
 // Map dynamic keys to their corresponding icons and titles
 const iconMapping = {
@@ -50,6 +51,10 @@ export function Home() {
   });
 
   return (
+    <React.Fragment>
+      <Helmet>
+        <title>{'Salesman Panel'}</title>
+      </Helmet>
     
     <div className="mt-12">
       <div className="mb-12 grid gap-y-10 gap-x-6 md:grid-cols-2 xl:grid-cols-2">
@@ -68,6 +73,7 @@ export function Home() {
         ))}
       </div>
     </div>
+</React.Fragment>
   );
 }
 

@@ -8,12 +8,18 @@ import {
 } from "@heroicons/react/24/solid";
 import { useDispatch, useSelector } from "react-redux";
 import { customerVerifyCount } from "@/store/action/home.action";
+import { Helmet } from 'react-helmet-async';
 
 // Map dynamic keys to their corresponding icons and titles
 const iconMapping = {
   customerVerifySuccessCount: {
     title: "Total Verified",
     icon: BanknotesIcon,
+    formatValue: (value) => value.toString(), // Formatting for amount
+  },
+  customerVerifyRejectedCount: {
+    title: "Total Rejected",
+    icon: UserPlusIcon,
     formatValue: (value) => value.toString(), // Formatting for amount
   },
   customerVerifyPendingCount: {
@@ -49,10 +55,14 @@ export function CustomerDashboard() {
   });
 
   return (
+    <React.Fragment>
+      <Helmet>
+        <title>{'Customer Panel'}</title>
+      </Helmet>
 
     
     <div className="mt-12">
-      <div className="mb-12 grid gap-y-10 gap-x-6 md:grid-cols-2 xl:grid-cols-2">
+      <div className="mb-12 grid gap-y-10 gap-x-6 md:grid-cols-2 xl:grid-cols-3">
         {statisticsCardsData.map(({ title, value, icon: Icon }) => (
           <StatisticsCard
             key={title}
@@ -68,6 +78,7 @@ export function CustomerDashboard() {
         ))}
       </div>
     </div>
+    </React.Fragment>
   );
 }
 

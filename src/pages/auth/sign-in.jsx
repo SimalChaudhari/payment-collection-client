@@ -13,20 +13,24 @@ import { toast } from "react-toastify";
 
 // Validation schema with Yup
 const validationSchema = Yup.object({
-   email: Yup.string()
-   .email('Invalid email format')
-   .matches(/^[^\s@]+@[^\s@]+\.(com)$/, 'Email must end with .com')
-   .required('Email is required'),
+  email: Yup.string()
+    .email('Invalid email format')
+    .matches(/^[^\s@]+@[^\s@]+\.(com)$/, 'Email must end with .com')
+    .required('Email is required'),
   password: Yup.string().required('Password Required'),
 });
 
 export function SignIn() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const [loader, setLoader] = useState(false)
+
 
   const handleLogin = async (values) => {
     const { email, password } = values;
+    setLoader(true)
     const result = await dispatch(login(email, password));
+    setLoader(false)
 
     if (result.success) {
       const { role } = result.user; // Ensure `role` is present
@@ -83,7 +87,10 @@ export function SignIn() {
                   <ErrorMessage name="password" component="div" className="text-red-500" />
                 </div>
               </div>
-              <Button type="submit" className="mt-6" fullWidth>Sign In</Button>
+              <Button type="submit" className="mt-6" fullWidth>
+
+                {loader ? "Loading..." : "Login"}
+              </Button>
             </Form>
           )}
         </Formik>
