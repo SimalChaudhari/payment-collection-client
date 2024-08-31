@@ -52,8 +52,8 @@ export function AdminProfile() {
                 resetForm()
             }
         },
-      });
-    
+    });
+
 
     const handleProfileChange = (e) => {
         setProfileInfo({
@@ -62,7 +62,7 @@ export function AdminProfile() {
         });
     };
 
- 
+
 
     const handlePersonalInfoSubmit = (e) => {
         e.preventDefault();
@@ -74,13 +74,19 @@ export function AdminProfile() {
     const formikAdmin = useFormik({
         initialValues: {
             name: userData?.name,
-            mobile:userData?.mobile,
+            mobile: userData?.mobile,
             email: userData?.email,
         },
         validationSchema: Yup.object({
             name: Yup.string().required("First Name is required"),
-            mobile: Yup.string().required("Mobile is required"),
-            email: Yup.string().email("Invalid email format").required("Email is required"),
+            mobile: Yup.string()
+                .required('Mobile number is required')
+                .matches(/^\d{10}$/, 'Mobile number must be exactly 10 digits and only numeric')
+                .test('is-numeric', 'Mobile number must contain only numbers', value => !isNaN(Number(value))),
+            email: Yup.string()
+                .email('Invalid email format')
+                .matches(/^[^\s@]+@[^\s@]+\.(com)$/, 'Email must end with .com')
+                .required('Email is required')
         }),
         onSubmit: async (values) => {
             const user = {
@@ -100,10 +106,10 @@ export function AdminProfile() {
                         }
                     },
                 });
-                
-              // Update localStorage
+
+                // Update localStorage
                 const updatedUserData = { ...userData, ...user };
-                localStorage.setItem('userData', JSON.stringify({user:updatedUserData}));
+                localStorage.setItem('userData', JSON.stringify({ user: updatedUserData }));
                 toast.success('Personal information updated');
             }
         },
@@ -123,96 +129,96 @@ export function AdminProfile() {
                 <div className="absolute inset-0 h-full w-full bg-gray-900/75" />
             </div>
             <Card className="mx-3 -mt-16 mb-6 lg:mx-4 border border-blue-gray-100">
-            <CardBody className="p-4">
-            <div className="mb-10 flex items-center justify-between gap-6">
-                <div className="flex items-center gap-6">
-                    <div>
-                        <Typography variant="h5" color="blue-gray" className="mb-1">
-                            {userData.name}
-                        </Typography>
-                        <Typography
-                            variant="small"
-                            className="font-normal text-blue-gray-600"
-                        >
-                            {userData.mobile}
-                        </Typography>
-                    </div>
-                </div>
-               
-            </div>
-            <div className="mb-12 grid gap-12 px-4 lg:grid-cols-2 xl:grid-cols-2">
-                
-                <div> 
-                <div className="flex items-center">
-              <Typography variant="h6" color="blue-gray" className="mr-4">
-                 Personal Information
-               </Typography>
-              <Tooltip content={isEditingPersonal ? "Save Profile" : "Edit Profile"}>
-                  <PencilIcon
-                 className="h-6 w-6 cursor-pointer text-blue-gray-500 mr-2"
-                 onClick={handlePersonalEditToggle}/>
-                       </Tooltip>
-                       </div>
+                <CardBody className="p-4">
+                    <div className="mb-10 flex items-center justify-between gap-6">
+                        <div className="flex items-center gap-6">
+                            <div>
+                                <Typography variant="h5" color="blue-gray" className="mb-1">
+                                    {userData.name}
+                                </Typography>
+                                <Typography
+                                    variant="small"
+                                    className="font-normal text-blue-gray-600"
+                                >
+                                    {userData.mobile}
+                                </Typography>
+                            </div>
+                        </div>
 
-                   
-                    <form onSubmit={formikAdmin.handleSubmit} className="flex flex-col gap-6 mt-3">
-                        {isEditingPersonal ? (
-                            <>
-                                <TextField
-                                    label="First Name"
-                                    name="name"
-                                    value={formikAdmin.values.name}
-                                    onChange={formikAdmin.handleChange}
-                                    onBlur={formikAdmin.handleBlur}
-                                    variant="outlined"
-                                    fullWidth
-                                    className="mb-2"
-                                    error={formikAdmin.touched.name && Boolean(formikAdmin.errors.name)}
-                                    helperText={formikAdmin.touched.name && formikAdmin.errors.name}
-                                />
-                                <TextField
-                                    label="Mobile"
-                                    name="mobile"
-                                    value={formikAdmin.values.mobile}
-                                    onChange={formikAdmin.handleChange}
-                                    onBlur={formikAdmin.handleBlur}
-                                    variant="outlined"
-                                    fullWidth
-                                    className="mb-2"
-                                    error={formikAdmin.touched.mobile && Boolean(formikAdmin.errors.mobile)}
-                                    helperText={formikAdmin.touched.mobile && formikAdmin.errors.mobile}
-                                />
-                                <TextField
-                                    label="Email"
-                                    name="email"
-                                    value={formikAdmin.values.email}
-                                    onChange={formikAdmin.handleChange}
-                                    onBlur={formikAdmin.handleBlur}
-                                    variant="outlined"
-                                    fullWidth
-                                    className="mb-2"
-                                    error={formikAdmin.touched.email && Boolean(formikAdmin.errors.email)}
-                                    helperText={formikAdmin.touched.email && formikAdmin.errors.email}
-                                />
-                                <Button type="submit" variant="contained" color="primary">
-                                    Save Changes
-                                </Button>
-                            </>
-                        ) : (
-                            <>
-                                <Typography variant="body2" className="mb-2">
-                                    <strong>First Name:</strong> {formikAdmin.values.name}
+                    </div>
+                    <div className="mb-12 grid gap-12 px-4 lg:grid-cols-2 xl:grid-cols-2">
+
+                        <div>
+                            <div className="flex items-center">
+                                <Typography variant="h6" color="blue-gray" className="mr-4">
+                                    Personal Information
                                 </Typography>
-                                <Typography variant="body2" className="mb-2">
-                                    <strong>Mobile:</strong> {formikAdmin.values.mobile}
-                                </Typography>
-                                <Typography variant="body2" className="mb-2">
-                                    <strong>Email:</strong> {formikAdmin.values.email}
-                                </Typography>
-                            </>
-                        )}
-                    </form>
-                </div>
+                                <Tooltip content={isEditingPersonal ? "Save Profile" : "Edit Profile"}>
+                                    <PencilIcon
+                                        className="h-6 w-6 cursor-pointer text-blue-gray-500 mr-2"
+                                        onClick={handlePersonalEditToggle} />
+                                </Tooltip>
+                            </div>
+
+
+                            <form onSubmit={formikAdmin.handleSubmit} className="flex flex-col gap-6 mt-3">
+                                {isEditingPersonal ? (
+                                    <>
+                                        <TextField
+                                            label="First Name"
+                                            name="name"
+                                            value={formikAdmin.values.name}
+                                            onChange={formikAdmin.handleChange}
+                                            onBlur={formikAdmin.handleBlur}
+                                            variant="outlined"
+                                            fullWidth
+                                            className="mb-2"
+                                            error={formikAdmin.touched.name && Boolean(formikAdmin.errors.name)}
+                                            helperText={formikAdmin.touched.name && formikAdmin.errors.name}
+                                        />
+                                        <TextField
+                                            label="Mobile"
+                                            name="mobile"
+                                            value={formikAdmin.values.mobile}
+                                            onChange={formikAdmin.handleChange}
+                                            onBlur={formikAdmin.handleBlur}
+                                            variant="outlined"
+                                            fullWidth
+                                            className="mb-2"
+                                            error={formikAdmin.touched.mobile && Boolean(formikAdmin.errors.mobile)}
+                                            helperText={formikAdmin.touched.mobile && formikAdmin.errors.mobile}
+                                        />
+                                        <TextField
+                                            label="Email"
+                                            name="email"
+                                            value={formikAdmin.values.email}
+                                            onChange={formikAdmin.handleChange}
+                                            onBlur={formikAdmin.handleBlur}
+                                            variant="outlined"
+                                            fullWidth
+                                            className="mb-2"
+                                            error={formikAdmin.touched.email && Boolean(formikAdmin.errors.email)}
+                                            helperText={formikAdmin.touched.email && formikAdmin.errors.email}
+                                        />
+                                        <Button type="submit" variant="contained" color="primary">
+                                            Save Changes
+                                        </Button>
+                                    </>
+                                ) : (
+                                    <>
+                                        <Typography variant="body2" className="mb-2">
+                                            <strong>First Name:</strong> {formikAdmin.values.name}
+                                        </Typography>
+                                        <Typography variant="body2" className="mb-2">
+                                            <strong>Mobile:</strong> {formikAdmin.values.mobile}
+                                        </Typography>
+                                        <Typography variant="body2" className="mb-2">
+                                            <strong>Email:</strong> {formikAdmin.values.email}
+                                        </Typography>
+                                    </>
+                                )}
+                            </form>
+                        </div>
 
                         <div>
                             <Typography variant="h6" color="blue-gray" className="mb-3">
@@ -258,7 +264,7 @@ export function AdminProfile() {
                                     error={formik.touched.confirmPassword && Boolean(formik.errors.confirmPassword)}
                                     helperText={formik.touched.confirmPassword && formik.errors.confirmPassword}
                                 />
-                                <Button  
+                                <Button
                                     type="submit"
                                     onClick={formik.handleSubmit} variant="contained" color="primary" disabled={formik.isSubmitting}>
                                     {formik.isSubmitting ? 'Resetting...' : 'Reset Password'}

@@ -21,7 +21,7 @@ export const paymentHistory = () => {
   
         return true;
       } catch (error) {
-        toast.error(error.response?.data?.message || "Something went wrong");
+        // toast.error(error.response?.data?.message || "Something went wrong");
         return false;
       }
     };
@@ -48,7 +48,27 @@ export const paymentHistory = () => {
   
         return true;
       } catch (error) {
-        toast.error(error.response?.data?.message || "Something went wrong");
+        // toast.error(error.response?.data?.message || "Something went wrong");
+        return false;
+      }
+    };
+  };
+
+  export const paymentVerification = (id,status) => {
+    return async (dispatch) => {
+      try {
+        // Retrieve token from local storage
+        const token = localStorage.getItem('token');
+        // Make an actual API request to your backend
+        await axiosInstance.put(`/user/verify/${id}`, { status }, {
+        headers: {
+          Authorization: `Bearer ${token}`, // Add token to the headers
+        }    });
+
+  
+        return true;
+      } catch (error) {
+        // toast.error(error.response?.data?.message || "Something went wrong");
         return false;
       }
     };

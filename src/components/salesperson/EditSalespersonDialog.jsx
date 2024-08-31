@@ -3,17 +3,24 @@ import { Dialog, DialogTitle, DialogContent, DialogActions, Button, TextField } 
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { useDispatch } from 'react-redux';
-import { editSalesman ,salesman} from '@/store/action/salesman.action';
+import { editSalesman, salesman } from '@/store/action/salesman.action';
 
 const EditSalespersonDialog = ({ open, onClose, salesmanData }) => {
   const dispatch = useDispatch();
 
   const validationSchema = Yup.object({
     name: Yup.string().required('Name is required'),
-    email: Yup.string().email('Invalid email address').required('Email is required'),
-    mobile: Yup.string().required('Mobile number is required'),
-
+    email: Yup.string()
+    .email('Invalid email format')
+    .matches(/^[^\s@]+@[^\s@]+\.(com)$/, 'Email must end with .com')
+    .required('Email is required'),
+    mobile: Yup.string()
+      .required('Mobile number is required')
+      .matches(/^\d{10}$/, 'Mobile number must be exactly 10 digits and only numeric')
+      .test('is-numeric', 'Mobile number must contain only numbers', value => !isNaN(Number(value)))
   });
+
+
   const fetchData = async () => {
     await dispatch(salesman());
   };
@@ -23,11 +30,11 @@ const EditSalespersonDialog = ({ open, onClose, salesmanData }) => {
       name: '',
       email: '',
       mobile: '',
-  
+
     },
     validationSchema,
-    onSubmit:async (values) => {
-      await dispatch(editSalesman(salesmanData._id,values));
+    onSubmit: async (values) => {
+      await dispatch(editSalesman(salesmanData._id, values));
       onClose();
       fetchData()
     },
@@ -77,7 +84,7 @@ const EditSalespersonDialog = ({ open, onClose, salesmanData }) => {
           fullWidth
           margin="normal"
         />
-       
+
       </DialogContent>
       <DialogActions>
         <Button onClick={formik.handleSubmit} color="primary" variant="contained">Save</Button>

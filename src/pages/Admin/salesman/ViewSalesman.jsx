@@ -14,6 +14,7 @@ import DeleteSalespersonDialog from '@/components/salesperson/DeleteSalespersonD
 
 import { salesman } from '@/store/action/salesman.action';
 import { useDispatch, useSelector } from 'react-redux';
+import Pagination from '@/components/pagination/pagination';
 
 
 
@@ -85,21 +86,6 @@ const ViewSalesman = () => {
     setDeleteDialogOpen(false);
   };
 
-  const handleAddSalesman= (newSalesman) => {
-    // Logic to add the new Salesman
-    console.log('New Salesman:', newSalesman);
-    handleCloseAddDialog();
-  };
-
-  const handleEditSalesman= (updatedSalesman) => {
-    // Logic to update the Salesmanby ID
-    console.log('Updated Salesman:', updatedSalesman);
-    // handleCloseEditDialog();
-  };
-
-  const handleDeleteSalesman= () => {
-    handleCloseDeleteDialog();
-  };
 
   const getSalesmanById = (id) => {
     return salesmanData?.find(salesman => salesman._id === id);
@@ -121,7 +107,10 @@ const ViewSalesman = () => {
             Add Salesman
           </Button>
         </CardHeader>
-        <CardBody className="overflow-x-scroll px-0 pt-0 pb-2">
+        <CardBody className="overflow-x-auto px-0 pt-0 pb-2">
+          {currentData.length === 0 ? (
+            <Typography className="text-center py-4">No data found</Typography>
+          ) : (
           <table className="w-full min-w-[640px] table-auto">
             <thead>
               <tr>
@@ -182,7 +171,7 @@ const ViewSalesman = () => {
                     </td>
                   
                     <td className={className}>
-                      <div className="flex gap-2">
+                      <div className="flex gap-2 ">
                         <Button
                           color="light-blue"
                           size="sm"
@@ -211,24 +200,20 @@ const ViewSalesman = () => {
               })}
             </tbody>
           </table>
+            )}
         </CardBody>
-        <div className="flex justify-between items-center px-6 py-4">
-          <div className="flex gap-2">
-            {Array.from({ length: totalPages }, (_, i) => (
-              <Button
-                key={i + 1}
-                color={currentPage === i + 1 ? "light-blue" : "gray"}
-                size="sm"
-                onClick={() => handlePageChange(i + 1)}
-              >
-                {i + 1}
-              </Button>
-            ))}
+         {currentData.length === 0 ? null : (
+          <div className="flex flex-col md:flex-row justify-between items-center px-6 py-4">
+            <Pagination
+              totalPages={totalPages}
+              currentPage={currentPage}
+              onPageChange={handlePageChange}
+            />
+            <Typography className="text-xs font-normal text-blue-gray-500">
+              Page {currentPage} of {totalPages}
+            </Typography>
           </div>
-          <Typography className="text-xs font-normal text-blue-gray-500">
-            Page {currentPage} of {totalPages}
-          </Typography>
-        </div>
+        )}
       </Card>
 
       <AddSalespersonDialog 

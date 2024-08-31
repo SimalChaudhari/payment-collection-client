@@ -2,7 +2,7 @@ import React from 'react';
 import { Dialog, DialogTitle, DialogContent, DialogActions, Button, Typography, Box } from '@mui/material';
 
 const ViewCollectionDialog = ({ open, onClose, collection }) => {
-console.log("🚀 ~ ViewCollectionDialog ~ collection:", collection)
+
 const formattedDate = new Date("2024-08-30T00:00:00.000Z").toLocaleDateString('en-CA');
 
  return (

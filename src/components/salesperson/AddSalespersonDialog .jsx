@@ -17,11 +17,18 @@ import { addSalesman, salesman } from '@/store/action/salesman.action';
 // Validation schema using Yup
 const validationSchema = Yup.object({
   name: Yup.string().required('Name is required'),
-  email: Yup.string().email('Invalid email format').required('Email is required'),
-  mobile: Yup.string().required('Mobile number is required'),
+  email: Yup.string()
+  .email('Invalid email format')
+  .matches(/^[^\s@]+@[^\s@]+\.(com)$/, 'Email must end with .com')
+  .required('Email is required'),
+  mobile: Yup.string()
+    .required('Mobile number is required')
+    .matches(/^\d{10}$/, 'Mobile number must be exactly 10 digits and only numeric')
+    .test('is-numeric', 'Mobile number must contain only numbers', value => !isNaN(Number(value)))
 });
 
-const AddSalespersonDialog  = ({ open, onClose }) => {
+
+const AddSalespersonDialog = ({ open, onClose }) => {
   const dispatch = useDispatch();
 
   const fetchData = async () => {
@@ -87,11 +94,11 @@ const AddSalespersonDialog  = ({ open, onClose }) => {
         </form>
       </DialogContent>
       <DialogActions>
-        <Button onClick={onClose}  style={{
+        <Button onClick={onClose} style={{
           backgroundColor: 'green', // Adjust as needed
-          color:"#fff"
+          color: "#fff"
         }}
-      >
+        >
           Cancel
         </Button>
         <Button
@@ -115,4 +122,4 @@ const AddSalespersonDialog  = ({ open, onClose }) => {
   );
 };
 
-export default AddSalespersonDialog ;
+export default AddSalespersonDialog;

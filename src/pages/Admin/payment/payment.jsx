@@ -7,6 +7,7 @@ import {
 } from "@material-tailwind/react";
 import { paymentHistory } from '@/store/action/payment.action';
 import { useDispatch, useSelector } from 'react-redux';
+import Pagination from '@/components/pagination/pagination';
 
 const PAGE_SIZE = 5;
 
@@ -42,31 +43,8 @@ const Payment = () => {
     setCurrentPage(pageNumber);
   };
 
-  const handlePrevPage = () => {
-    if (currentPage > 1) {
-      setCurrentPage(currentPage - 1);
-    }
-  };
 
-  const handleNextPage = () => {
-    if (currentPage < totalPages) {
-      setCurrentPage(currentPage + 1);
-    }
-  };
 
-  const generatePageNumbers = () => {
-    const pages = [];
-    const range = 2; // Number of page buttons before and after current page
-
-    for (let i = 1; i <= totalPages; i++) {
-      if (i <= range || i > totalPages - range || (i >= currentPage - range && i <= currentPage + range)) {
-        pages.push(i);
-      } else if (i === range + 1 || i === totalPages - range) {
-        pages.push('...');
-      }
-    }
-    return pages;
-  };
 
   return (
     <div className="mt-12 mb-8 flex flex-col gap-12">
@@ -76,7 +54,10 @@ const Payment = () => {
             Payment List
           </Typography>
         </CardHeader>
-        <CardBody className="overflow-x-scroll px-0 pt-0 pb-2">
+        <CardBody className="overflow-x-auto px-0 pt-0 pb-2">
+          {currentData.length === 0 ? (
+            <Typography className="text-center py-4">No data found</Typography>
+          ) : (
           <table className="w-full min-w-[640px] table-auto">
             <thead>
               <tr>
@@ -152,44 +133,20 @@ const Payment = () => {
               })}
             </tbody>
           </table>
+                )}
         </CardBody>
-        <div className="flex flex-wrap justify-between items-center p-4">
-          <button
-            onClick={handlePrevPage}
-            disabled={currentPage === 1}
-            className="px-4 py-2 bg-gray-300 text-white rounded-lg disabled:opacity-50"
-          >
-            Previous
-          </button>
-          <div className="flex flex-wrap gap-2 overflow-x-auto">
-            {generatePageNumbers().map((page, index) => 
-              page === '...' ? (
-                <span key={index} className="px-4 py-2 rounded-lg bg-gray-200 text-gray-700">
-                  {page}
-                </span>
-              ) : (
-                <button
-                  key={page}
-                  onClick={() => handlePageChange(page)}
-                  className={`px-4 py-2 rounded-lg ${
-                    currentPage === page
-                      ? 'bg-blue-500 text-white'
-                      : 'bg-gray-200 text-gray-700'
-                  }`}
-                >
-                  {page}
-                </button>
-              )
-            )}
+        {currentData.length === 0 ? null : (
+          <div className="flex flex-col md:flex-row justify-between items-center px-6 py-4">
+            <Pagination
+              totalPages={totalPages}
+              currentPage={currentPage}
+              onPageChange={handlePageChange}
+            />
+            <Typography className="text-xs font-normal text-blue-gray-500">
+              Page {currentPage} of {totalPages}
+            </Typography>
           </div>
-          <button
-            onClick={handleNextPage}
-            disabled={currentPage === totalPages}
-            className="px-4 py-2 bg-gray-300 text-white rounded-lg disabled:opacity-50"
-          >
-            Next
-          </button>
-        </div>
+        )}
       </Card>
     </div>
   );

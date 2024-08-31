@@ -17,9 +17,16 @@ import { addCustomer, customer } from '@/store/action/customer.action';
 // Validation schema using Yup
 const validationSchema = Yup.object({
   name: Yup.string().required('Name is required'),
-  email: Yup.string().email('Invalid email format').required('Email is required'),
-  mobile: Yup.string().required('Mobile number is required'),
+   email: Yup.string()
+   .email('Invalid email format')
+   .matches(/^[^\s@]+@[^\s@]+\.(com)$/, 'Email must end with .com')
+   .required('Email is required'),
+ mobile: Yup.string()
+ .required('Mobile number is required')
+ .matches(/^\d{10}$/, 'Mobile number must be exactly 10 digits and only numeric')
+ .test('is-numeric', 'Mobile number must contain only numbers', value => !isNaN(Number(value)))
 });
+
 
 const AddCustomerDialog = ({ open, onClose }) => {
   const dispatch = useDispatch();

@@ -12,6 +12,7 @@ import ViewCollectionDialog from '@/components/collection/ViewCollectionDialog';
 import DeleteCollectionDialog from '@/components/collection/DeleteCollectionDialog';
 import { useDispatch, useSelector } from 'react-redux';
 import { collection } from '@/store/action/collection.action';
+import Pagination from '@/components/pagination/pagination';
 
 const PAGE_SIZE = 5;
 
@@ -26,19 +27,19 @@ const Collection = () => {
 
   const dispatch = useDispatch()
 
-  const collectionData = useSelector((state) => state.collectionReducer.collectionList);
- 
+  const collectionData = useSelector((state) => state.collectionReducer.collectionList)
+
   useEffect(() => {
     const fetchData = async () => {
       await dispatch(collection());
     };
   
     fetchData();
-  }, []); // Empty dependency array ensures it runs only once when the component mounts.
+  }, [dispatch]); // Empty dependency array ensures it runs only once when the component mounts.
   
-  const totalPages = Math.ceil(collectionData?.length / PAGE_SIZE);
+  const totalPages = Math.ceil(collectionData.length / PAGE_SIZE);
 
-  const currentData = collectionData?.slice(
+  const currentData = collectionData.slice(
     (currentPage - 1) * PAGE_SIZE,
     currentPage * PAGE_SIZE
   );
@@ -118,7 +119,10 @@ const Collection = () => {
             Add Collection
           </Button>
         </CardHeader>
-        <CardBody className="overflow-x-scroll px-0 pt-0 pb-2">
+        <CardBody className="overflow-x-auto px-0 pt-0 pb-2">
+          {currentData.length === 0 ? (
+            <Typography className="text-center py-4">No data found</Typography>
+          ) : (
           <table className="w-full min-w-[640px] table-auto">
             <thead>
               <tr>
@@ -207,24 +211,20 @@ const Collection = () => {
               })}
             </tbody>
           </table>
+                )}
         </CardBody>
-        <div className="flex justify-between items-center px-6 py-4">
-          <div className="flex gap-2">
-            {Array.from({ length: totalPages }, (_, i) => (
-              <Button
-                key={i + 1}
-                color={currentPage === i + 1 ? "light-blue" : "gray"}
-                size="sm"
-                onClick={() => handlePageChange(i + 1)}
-              >
-                {i + 1}
-              </Button>
-            ))}
+        {currentData.length === 0 ? null : (
+          <div className="flex flex-col md:flex-row justify-between items-center px-6 py-4">
+            <Pagination
+              totalPages={totalPages}
+              currentPage={currentPage}
+              onPageChange={handlePageChange}
+            />
+            <Typography className="text-xs font-normal text-blue-gray-500">
+              Page {currentPage} of {totalPages}
+            </Typography>
           </div>
-          <Typography className="text-xs font-normal text-blue-gray-500">
-            Page {currentPage} of {totalPages}
-          </Typography>
-        </div>
+        )}
       </Card>
 
       <AddCollectionDialog

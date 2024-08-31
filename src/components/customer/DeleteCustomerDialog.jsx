@@ -10,7 +10,6 @@ const DeleteCustomerDialog = ({ open, onClose, onDeleteCustomer }) => {
   const fetchData = async () => {
     await dispatch(customer());
   };
-
   const handleDelete = async() => {
     const res =  await dispatch(customerDelete(onDeleteCustomer))
     if(res){
@@ -18,7 +17,6 @@ const DeleteCustomerDialog = ({ open, onClose, onDeleteCustomer }) => {
       fetchData()
     }
   };
-
   return (
     <Dialog open={open} onClose={onClose}>
       <DialogTitle>Delete Customer</DialogTitle>

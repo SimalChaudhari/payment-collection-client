@@ -12,8 +12,9 @@ import ViewCustomerDialog from '@/components/customer/ViewCustomerDialog';
 import DeleteCustomerDialog from '@/components/customer/DeleteCustomerDialog';
 import { customer } from '@/store/action/customer.action';
 import { useDispatch, useSelector } from 'react-redux';
+import Pagination from '@/components/pagination/pagination';
 
-const PAGE_SIZE = 5;
+const PAGE_SIZE = 4;
 
 const View = () => {
   const [currentPage, setCurrentPage] = useState(1);
@@ -26,6 +27,7 @@ const View = () => {
   const dispatch = useDispatch();
 
   const customersData = useSelector((state) => state.customerReducer.customer);
+  console.log("🚀 ~ View ~ customersData:", customersData)
 
   useEffect(() => {
     const fetchData = async () => {
@@ -101,21 +103,24 @@ const View = () => {
   return (
     <div className="mt-12 mb-8 flex flex-col gap-12">
       <Card>
-        <CardHeader variant="gradient" color="gray" className="mb-8 p-6 flex justify-between items-center">
+        <CardHeader variant="gradient" color="gray" className="mb-8 p-6 flex flex-col md:flex-row justify-between items-center">
           <Typography variant="h6" color="white">
             Customer List
           </Typography>
           <Button
             color="light-blue"
             size="sm"
-            className="ml-auto"
+            className="mt-4 md:mt-0"
             onClick={handleOpenAddDialog}
           >
             Add Customer
           </Button>
         </CardHeader>
-        <CardBody className="overflow-x-scroll px-0 pt-0 pb-2">
-          <table className="w-full min-w-[640px] table-auto">
+        <CardBody className="overflow-x-auto px-0 pt-0 pb-2">
+          {currentData.length === 0 ? (
+            <Typography className="text-center py-4">No data found</Typography>
+          ) : (
+          <table className="w-full min-w-full md:min-w-[640px] table-auto">
             <thead>
               <tr>
                 {["SNo", "Name", "Email", "Mobile", "Actions"].map((el) => (
@@ -136,11 +141,10 @@ const View = () => {
             <tbody>
               {currentData.map((customer, key) => {
                 const { _id, name, email, mobile } = customer;
-                const className = `py-3 px-5 ${
-                  key === currentData.length - 1
+                const className = `py-3 px-5 ${key === currentData.length - 1
                     ? ""
                     : "border-b border-blue-gray-50"
-                }`;
+                  }`;
 
                 return (
                   <tr key={_id}>
@@ -173,7 +177,7 @@ const View = () => {
                       </Typography>
                     </td>
                     <td className={className}>
-                      <div className="flex gap-2">
+                      <div className="flex gap-2 flex-wrap">
                         <Button
                           color="light-blue"
                           size="sm"
@@ -202,24 +206,21 @@ const View = () => {
               })}
             </tbody>
           </table>
+            )}
         </CardBody>
-        <div className="flex justify-between items-center px-6 py-4">
-          <div className="flex gap-2">
-            {Array.from({ length: totalPages }, (_, i) => (
-              <Button
-                key={i + 1}
-                color={currentPage === i + 1 ? "light-blue" : "gray"}
-                size="sm"
-                onClick={() => handlePageChange(i + 1)}
-              >
-                {i + 1}
-              </Button>
-            ))}
+
+        {currentData.length === 0 ? null : (
+          <div className="flex flex-col md:flex-row justify-between items-center px-6 py-4">
+            <Pagination
+              totalPages={totalPages}
+              currentPage={currentPage}
+              onPageChange={handlePageChange}
+            />
+            <Typography className="text-xs font-normal text-blue-gray-500">
+              Page {currentPage} of {totalPages}
+            </Typography>
           </div>
-          <Typography className="text-xs font-normal text-blue-gray-500">
-            Page {currentPage} of {totalPages}
-          </Typography>
-        </div>
+        )}
       </Card>
 
       <AddCustomerDialog

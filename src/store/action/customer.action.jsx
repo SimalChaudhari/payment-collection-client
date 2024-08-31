@@ -13,6 +13,7 @@ export const customer = () => {
             },
           }
         );
+  
      
         dispatch({
           type: 'CUSTOMER_LIST',
@@ -21,7 +22,7 @@ export const customer = () => {
   
         return true;
       } catch (error) {
-        toast.error(error.response?.data?.message || "Something went wrong");
+        // toast.error(error.response?.data?.message || "Something went wrong");
         return false;
       }
     };

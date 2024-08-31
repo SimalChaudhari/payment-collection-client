@@ -23,8 +23,15 @@ const EditCollectionDialog = ({ open, onClose, collectionData }) => {
 
   const validationSchema = Yup.object({
     customerName: Yup.string().required('Customer is required'),
-    amount: Yup.string().required('Amount is required'),
-    date: Yup.string().required('Date is required'),
+    amount: Yup.number()
+    .required('Amount is required')
+    .positive('Amount must be greater than zero')
+    .min(0.01, 'Amount must be greater than zero')  // Ensures it's greater than zero
+    .typeError('Amount must be a number'),
+
+  date: Yup.date()
+    .required('Date is required')
+    .typeError('Invalid date format')
   });
 
   useEffect(() => {

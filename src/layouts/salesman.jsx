@@ -9,7 +9,7 @@ import {
 } from "@/widgets/layout";
 
 import { useMaterialTailwindController, setOpenConfigurator } from "@/context";
-import { routesSalesman } from "@/routes";
+import { salesmanRoutes } from "@/routes";
 
 export function SalesmanDashboard() {
   const [controller, dispatch] = useMaterialTailwindController();
@@ -18,7 +18,7 @@ export function SalesmanDashboard() {
   return (
     <div className="min-h-screen bg-blue-gray-50/50">
       <Sidenav
-        routes={routesSalesman}
+        routes={salesmanRoutes}
         brandImg={
           sidenavType === "dark" ? "/img/logo-ct.png" : "/img/logo-ct-dark.png"
         }
@@ -36,7 +36,7 @@ export function SalesmanDashboard() {
           <Cog6ToothIcon className="h-5 w-5" />
         </IconButton>
         <Routes>
-          {routesSalesman.map(
+          {salesmanRoutes.map(
             ({ layout, pages }) =>
               layout === "salesman" &&
               pages.map(({ path, element }) => (

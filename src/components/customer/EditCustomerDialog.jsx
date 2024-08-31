@@ -3,7 +3,7 @@ import { Dialog, DialogTitle, DialogContent, DialogActions, Button, TextField } 
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { useDispatch } from 'react-redux';
-import { editCustomer ,customer} from '@/store/action/customer.action';
+import { editCustomer, customer } from '@/store/action/customer.action';
 
 const EditCustomerDialog = ({ open, onClose, customerData }) => {
   const dispatch = useDispatch();
@@ -11,10 +11,17 @@ const EditCustomerDialog = ({ open, onClose, customerData }) => {
   console.log(customerData)
   const validationSchema = Yup.object({
     name: Yup.string().required('Name is required'),
-    email: Yup.string().email('Invalid email address').required('Email is required'),
-    mobile: Yup.string().required('Mobile number is required'),
-
+    email: Yup.string()
+    .email('Invalid email format')
+    .matches(/^[^\s@]+@[^\s@]+\.(com)$/, 'Email must end with .com')
+    .required('Email is required'),
+    mobile: Yup.string()
+      .required('Mobile number is required')
+      .matches(/^\d{10}$/, 'Mobile number must be exactly 10 digits and only numeric')
+      .test('is-numeric', 'Mobile number must contain only numbers', value => !isNaN(Number(value)))
   });
+
+
   const fetchData = async () => {
     await dispatch(customer());
   };
@@ -24,11 +31,11 @@ const EditCustomerDialog = ({ open, onClose, customerData }) => {
       name: '',
       email: '',
       mobile: '',
-  
+
     },
     validationSchema,
-    onSubmit:async (values) => {
-      await dispatch(editCustomer(customerData._id,values));
+    onSubmit: async (values) => {
+      await dispatch(editCustomer(customerData._id, values));
       onClose();
       fetchData()
     },
@@ -78,7 +85,7 @@ const EditCustomerDialog = ({ open, onClose, customerData }) => {
           fullWidth
           margin="normal"
         />
-       
+
       </DialogContent>
       <DialogActions>
         <Button onClick={formik.handleSubmit} color="primary" variant="contained">Save</Button>
