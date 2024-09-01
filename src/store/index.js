@@ -8,6 +8,7 @@ import salesmanReducer from './reducer/salesmanReducer';
 import paymentReducer from './reducer/paymentReducer';
 import homeReducer from './reducer/homeReducer';
 import reportReducer from './reducer/reportReducer';
+import notificationReducer from './reducer/notificationReducer';
 
 
 const rootReducer = combineReducers({
@@ -17,7 +18,8 @@ const rootReducer = combineReducers({
     salesmanReducer,
     paymentReducer,
     reportReducer,
-    collectionReducer
+    collectionReducer,
+    notificationReducer
 })
 
 const middleware = [thunk];

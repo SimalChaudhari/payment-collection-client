@@ -24,7 +24,7 @@ const Collection = () => {
   const [viewDialogOpen, setViewDialogOpen] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [selectedCollectionId, setSelectedCollectionId] = useState(null);
-  
+
 
   const dispatch = useDispatch()
 
@@ -35,10 +35,10 @@ const Collection = () => {
     const fetchData = async () => {
       await dispatch(collection());
     };
-  
+
     fetchData();
   }, [dispatch]); // Empty dependency array ensures it runs only once when the component mounts.
-  
+
   const totalPages = Math.ceil(collectionData.length / PAGE_SIZE);
 
   const currentData = collectionData.slice(
@@ -125,64 +125,63 @@ const Collection = () => {
           {currentData.length === 0 ? (
             <Typography className="text-center py-4">No data found</Typography>
           ) : (
-          <table className="w-full min-w-[640px] table-auto">
-            <thead>
-              <tr>
-                {["SNo","Customer Name", "Amount", "Date","Status", "Actions"].map((el) => (
-                  <th
-                    key={el}
-                    className="border-b border-blue-gray-50 py-3 px-5 text-left"
-                  >
-                    <Typography
-                      variant="small"
-                      className="text-[11px] font-bold uppercase text-blue-gray-400"
+            <table className="w-full min-w-[640px] table-auto">
+              <thead>
+                <tr>
+                  {["SNo", "Customer Name", "Amount", "Date", "Status", "Actions"].map((el) => (
+                    <th
+                      key={el}
+                      className="border-b border-blue-gray-50 py-3 px-5 text-left"
                     >
-                      {el}
-                    </Typography>
-                  </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {currentData.map((collection, key) => {
-                const { _id, customerName, amount,customerVerify, date } = collection;
-                const className = `py-3 px-5 ${
-                  key === currentData.length - 1
-                    ? ""
-                    : "border-b border-blue-gray-50"
-                }`;
-
-                return (
-                  <tr key={_id}>
-                  <td className={className}>
-                  <Typography
-                    variant="small"
-                    color="blue-gray"
-                    className="font-semibold"
-                  >
-                    {(currentPage - 1) * PAGE_SIZE + key + 1}
-                  </Typography>
-                  </td>
-                    <td className={className}>
                       <Typography
                         variant="small"
-                        color="blue-gray"
-                        className="font-semibold"
+                        className="text-[11px] font-bold uppercase text-blue-gray-400"
                       >
-                        {customerName?.name}
+                        {el}
                       </Typography>
-                    </td>
-                    <td className={className}>
-                      <Typography className="text-xs font-normal text-blue-gray-500">
-                        {amount}
-                      </Typography>
-                    </td>
-                    <td className={className}>
-                      <Typography className="text-xs font-normal text-blue-gray-500">
-                        {new Date(date).toISOString().split('T')[0]}
-                      </Typography>
-                    </td>
-                    <td className={className}>
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {currentData.map((collection, key) => {
+                  const { _id, customerName, amount, customerVerify, date } = collection;
+                  const className = `py-3 px-5 ${key === currentData.length - 1
+                    ? ""
+                    : "border-b border-blue-gray-50"
+                    }`;
+
+                  return (
+                    <tr key={_id}>
+                      <td className={className}>
+                        <Typography
+                          variant="small"
+                          color="blue-gray"
+                          className="font-semibold"
+                        >
+                          {(currentPage - 1) * PAGE_SIZE + key + 1}
+                        </Typography>
+                      </td>
+                      <td className={className}>
+                        <Typography
+                          variant="small"
+                          color="blue-gray"
+                          className="font-semibold"
+                        >
+                          {customerName?.name}
+                        </Typography>
+                      </td>
+                      <td className={className}>
+                        <Typography className="text-xs font-normal text-blue-gray-500">
+                          {amount}
+                        </Typography>
+                      </td>
+                      <td className={className}>
+                        <Typography className="text-xs font-normal text-blue-gray-500">
+                          {new Date(date).toISOString().split('T')[0]}
+                        </Typography>
+                      </td>
+                      <td className={className}>
                         <Chip
                           variant="gradient"
                           color={customerVerify === "Accepted" ? "green" : customerVerify === "Rejected" ? "red" : "gray"}
@@ -190,39 +189,41 @@ const Collection = () => {
                           className="py-0.5 px-2 text-[11px] font-medium w-fit"
                         />
                       </td>
-                  
-                  
-                    <td className={className}>
-                      <div className="flex gap-2">
-                        <Button
-                          color="light-blue"
-                          size="sm"
-                          onClick={() => handleOpenViewDialog(_id)}
-                        >
-                          View
-                        </Button>
-                        <Button
-                          color="green"
-                          size="sm"
-                          onClick={() => handleOpenEditDialog(_id)}
-                        >
-                          Edit
-                        </Button>
-                        <Button
-                          color="red"
-                          size="sm"
-                          onClick={() => handleOpenDeleteDialog(_id)}
-                        >
-                          Delete
-                        </Button>
-                      </div>
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
-                )}
+
+                      <td className={className}>
+                        <div className="flex gap-2">
+                          <Button
+                            color="light-blue"
+                            size="sm"
+                            onClick={() => handleOpenViewDialog(_id)}
+                          >
+                            View
+                          </Button>
+                          {customerVerify === "Pending" &&
+                            <Button
+                              color="green"
+                              size="sm"
+                              onClick={() => handleOpenEditDialog(_id)}
+                            >
+                              Edit
+                            </Button>
+                          }
+                          <Button
+                            color="red"
+                            size="sm"
+                            onClick={() => handleOpenDeleteDialog(_id)}
+                          >
+                            Delete
+                          </Button>
+                        </div>
+                      </td>
+
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          )}
         </CardBody>
         {currentData.length === 0 ? null : (
           <div className="flex flex-col md:flex-row justify-between items-center px-6 py-4">
@@ -241,13 +242,13 @@ const Collection = () => {
       <AddCollectionDialog
         open={dialogOpen}
         onClose={handleCloseAddDialog}
-       />
+      />
 
       <EditCollectionDialog
         open={editDialogOpen}
         onClose={handleCloseEditDialog}
         collectionData={getCollectionById(selectedCollectionId)}
-    
+
       />
 
       <ViewCollectionDialog
