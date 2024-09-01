@@ -22,14 +22,15 @@ import { customer } from '@/store/action/customer.action';
 const validationSchema = Yup.object({
   customerName: Yup.string().required('Customer is required'),
   amount: Yup.number()
-  .required('Amount is required')
-  .positive('Amount must be greater than zero')
-  .min(0.01, 'Amount must be greater than zero')  // Ensures it's greater than zero
-  .typeError('Amount must be a number'),
+    .required('Amount is required')
+    .positive('Amount must be greater than zero')
+    .min(0.01, 'Amount must be greater than zero')  // Ensures it's greater than zero
+    .typeError('Amount must be a number'),
 
-date: Yup.date()
-  .required('Date is required')
-  .typeError('Invalid date format')
+  date: Yup.date()
+    .required('Date is required')
+    .max(new Date(), 'Date cannot be in the future')  // Restricts date to today or earlier
+    .typeError('Invalid date format')
 });
 
 const AddCollectionDialog = ({ open, onClose }) => {
@@ -129,7 +130,7 @@ const AddCollectionDialog = ({ open, onClose }) => {
         </form>
       </DialogContent>
       <DialogActions>
-      <Button onClick={onClose} color="secondary" variant="outlined">
+        <Button onClick={onClose} color="secondary" variant="outlined">
           Cancel
         </Button>
         <Button

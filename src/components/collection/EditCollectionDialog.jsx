@@ -28,11 +28,11 @@ const EditCollectionDialog = ({ open, onClose, collectionData }) => {
     .positive('Amount must be greater than zero')
     .min(0.01, 'Amount must be greater than zero')  // Ensures it's greater than zero
     .typeError('Amount must be a number'),
-
-  date: Yup.date()
+    date: Yup.date()
     .required('Date is required')
+    .max(new Date(), 'Date cannot be in the future')  // Restricts date to today or earlier
     .typeError('Invalid date format')
-  });
+});
 
   useEffect(() => {
     const fetchData = async () => {
