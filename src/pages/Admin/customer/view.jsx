@@ -15,7 +15,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import Pagination from '@/components/pagination/pagination';
 import { EyeIcon, PencilSquareIcon, TrashIcon } from '@heroicons/react/24/solid';
 
-const PAGE_SIZE = 4;
+const PAGE_SIZE = 10;
 
 const View = () => {
   const [currentPage, setCurrentPage] = useState(1);
@@ -24,11 +24,11 @@ const View = () => {
   const [viewDialogOpen, setViewDialogOpen] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [selectedCustomerId, setSelectedCustomerId] = useState(null);
+  const [searchQuery, setSearchQuery] = useState('');
 
   const dispatch = useDispatch();
 
   const customersData = useSelector((state) => state.customerReducer.customer);
-  console.log("🚀 ~ View ~ customersData:", customersData)
 
   useEffect(() => {
     const fetchData = async () => {
@@ -37,66 +37,53 @@ const View = () => {
 
     fetchData();
   }, [dispatch]);
+  // Sort customers by creation date or a relevant field
+  const sortedData = [...customersData].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 
-  const totalPages = Math.ceil(customersData.length / PAGE_SIZE);
 
-  const currentData = customersData.slice(
+  const filteredData = sortedData.filter(customer =>
+    customer.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    customer.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    customer.mobile.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  // Update page number and current data when search query changes
+  useEffect(() => {
+    setCurrentPage(1); // Reset page to 1 when search query changes
+  }, [searchQuery]);
+
+  // Calculate total pages and current data slice
+  const totalPages = Math.ceil(filteredData.length / PAGE_SIZE);
+  const currentData = filteredData.slice(
     (currentPage - 1) * PAGE_SIZE,
     currentPage * PAGE_SIZE
   );
 
+  // Handle page change
   const handlePageChange = (page) => {
     setCurrentPage(page);
   };
 
-  const handleOpenAddDialog = () => {
-    setDialogOpen(true);
-  };
-
-  const handleCloseAddDialog = () => {
-    setDialogOpen(false);
-  };
-
+  // Handle dialog opening and closing
+  const handleOpenAddDialog = () => setDialogOpen(true);
+  const handleCloseAddDialog = () => setDialogOpen(false);
   const handleOpenEditDialog = (id) => {
     setSelectedCustomerId(id);
     setEditDialogOpen(true);
   };
-
-  const handleCloseEditDialog = () => {
-    setEditDialogOpen(false);
-  };
-
+  const handleCloseEditDialog = () => setEditDialogOpen(false);
   const handleOpenViewDialog = (id) => {
     setSelectedCustomerId(id);
     setViewDialogOpen(true);
   };
-
-  const handleCloseViewDialog = () => {
-    setViewDialogOpen(false);
-  };
-
+  const handleCloseViewDialog = () => setViewDialogOpen(false);
   const handleOpenDeleteDialog = (id) => {
     setSelectedCustomerId(id);
     setDeleteDialogOpen(true);
   };
+  const handleCloseDeleteDialog = () => setDeleteDialogOpen(false);
 
-  const handleCloseDeleteDialog = () => {
-    setDeleteDialogOpen(false);
-  };
-
-  const handleAddCustomer = (newCustomer) => {
-    console.log('New Customer:', newCustomer);
-    handleCloseAddDialog();
-  };
-
-  const handleEditCustomer = (updatedCustomer) => {
-    console.log('Updated Customer:', updatedCustomer);
-  };
-
-  const handleDeleteCustomer = () => {
-    handleCloseDeleteDialog();
-  };
-
+  // Get customer by ID
   const getCustomerById = (id) => {
     return customersData.find(customer => customer._id === id);
   };
@@ -106,7 +93,7 @@ const View = () => {
       <Card>
         <CardHeader variant="gradient" color="gray" className="mb-8 p-6 flex flex-col md:flex-row justify-between items-center">
           <Typography variant="h6" color="white">
-            Customer List
+            Customers List
           </Typography>
           <Button
             color="light-blue"
@@ -117,6 +104,15 @@ const View = () => {
             Add Customer
           </Button>
         </CardHeader>
+        <div className="px-6 py-4 flex max-sm:justify-center md:justify-end">
+        <input
+          type="text"
+          placeholder="Search..."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          className="p-2 border border-gray-300 rounded"
+        />
+      </div>
         <CardBody className="overflow-x-auto px-0 pt-0 pb-2">
           {currentData.length === 0 ? (
             <Typography className="text-center py-4">No data found</Typography>

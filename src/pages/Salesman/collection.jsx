@@ -16,7 +16,7 @@ import { collection } from '@/store/action/collection.action';
 import Pagination from '@/components/pagination/pagination';
 import { EyeIcon, PencilSquareIcon, TrashIcon } from '@heroicons/react/24/solid';
 
-const PAGE_SIZE = 5;
+const PAGE_SIZE = 10;
 
 const Collection = () => {
   const [currentPage, setCurrentPage] = useState(1);
@@ -25,12 +25,13 @@ const Collection = () => {
   const [viewDialogOpen, setViewDialogOpen] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [selectedCollectionId, setSelectedCollectionId] = useState(null);
+  const [searchQuery, setSearchQuery] = useState('');
 
 
   const dispatch = useDispatch()
 
   const collectionData = useSelector((state) => state.collectionReducer.collectionList)
-  console.log(collectionData)
+ 
 
   useEffect(() => {
     const fetchData = async () => {
@@ -40,9 +41,23 @@ const Collection = () => {
     fetchData();
   }, [dispatch]); // Empty dependency array ensures it runs only once when the component mounts.
 
-  const totalPages = Math.ceil(collectionData.length / PAGE_SIZE);
+  const sortedData = [...collectionData].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 
-  const currentData = collectionData.slice(
+  const filteredData = sortedData.filter(collect =>
+    collect.customerName?.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    collect.amount.toString().toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+
+  // Update page number and current data when search query changes
+  useEffect(() => {
+    setCurrentPage(1); // Reset page to 1 when search query changes
+  }, [searchQuery]);
+
+
+  const totalPages = Math.ceil(filteredData.length / PAGE_SIZE);
+
+  const currentData = filteredData.slice(
     (currentPage - 1) * PAGE_SIZE,
     currentPage * PAGE_SIZE
   );
@@ -111,7 +126,7 @@ const Collection = () => {
       <Card>
         <CardHeader variant="gradient" color="gray" className="mb-8 p-6 flex justify-between items-center">
           <Typography variant="h6" color="white">
-            Collection List
+            Collections List
           </Typography>
           <Button
             color="light-blue"
@@ -122,6 +137,15 @@ const Collection = () => {
             Add Collection
           </Button>
         </CardHeader>
+        <div className="px-6 py-4 flex max-sm:justify-center md:justify-end">
+          <input
+            type="text"
+            placeholder="Search..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="p-2 border border-gray-300 rounded"
+          />
+        </div>
         <CardBody className="overflow-x-auto px-0 pt-0 pb-2">
           {currentData.length === 0 ? (
             <Typography className="text-center py-4">No data found</Typography>

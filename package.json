@@ -25,7 +25,9 @@
     "dayjs": "^1.11.13",
     "file-saver": "^2.0.5",
     "formik": "^2.4.6",
+    "install": "^0.13.0",
     "jspdf": "^2.5.1",
+    "npm": "^10.8.3",
     "prop-types": "15.8.1",
     "react": "18.2.0",
     "react-apexcharts": "1.4.1",
@@ -37,6 +39,7 @@
     "react-router-dom": "6.17.0",
     "react-toastify": "^10.0.5",
     "redux-devtools-extension": "^2.13.9",
+    "simple-datatables": "^9.1.0",
     "toast": "^0.5.4",
     "xlsx": "^0.18.5",
     "yup": "^1.4.0"

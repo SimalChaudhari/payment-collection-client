@@ -10,11 +10,12 @@ import { paymentVerification, paymentVerified } from '@/store/action/payment.act
 import { useDispatch, useSelector } from 'react-redux';
 import Pagination from '@/components/pagination/pagination';
 
-const PAGE_SIZE = 5;
+const PAGE_SIZE = 10;
 
 const PaymentVerify = () => {
 
   const [currentPage, setCurrentPage] = useState(1);
+  const [searchQuery, setSearchQuery] = useState('');
 
   const dispatch = useDispatch();
 
@@ -32,10 +33,23 @@ const PaymentVerify = () => {
     const dateObj = new Date(isoDate);
     return `${dateObj.toLocaleDateString()} ${dateObj.toLocaleTimeString()}`;
   };
+  const sortedData = [...paymentsData].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 
-  const totalPages = Math.ceil(paymentsData.length / PAGE_SIZE);
+  const filteredData = sortedData.filter(pay =>
+    pay.salesman?.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    pay.customerName?.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    pay.amount.toString().toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
-  const currentData = paymentsData.slice(
+  // Update page number and current data when search query changes
+  useEffect(() => {
+    setCurrentPage(1); // Reset page to 1 when search query changes
+  }, [searchQuery]);
+
+
+  const totalPages = Math.ceil(filteredData.length / PAGE_SIZE);
+
+  const currentData = filteredData.slice(
     (currentPage - 1) * PAGE_SIZE,
     currentPage * PAGE_SIZE
   );
@@ -71,6 +85,16 @@ const PaymentVerify = () => {
             Payment Verify List
           </Typography>
         </CardHeader>
+
+        <div className="px-6 py-4 flex max-sm:justify-center md:justify-end">
+          <input
+            type="text"
+            placeholder="Search..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="p-2 border border-gray-300 rounded"
+          />
+        </div>
         <CardBody className="overflow-x-auto px-0 pt-0 pb-2">
           {currentData.length === 0 ? (
             <Typography className="text-center py-4">No data found</Typography>
@@ -145,29 +169,29 @@ const PaymentVerify = () => {
                         />
                       </td>
                       <td className={className}>
-  {customerVerify === "Pending" ? (
-    <div className="flex gap-2">
-      <Button
-        size="sm"
-        color="green"
-        onClick={() => handleAccept(_id)}
-      >
-        Accept
-      </Button>
-      <Button
-        size="sm"
-        color="red"
-        onClick={() => handleReject(_id)}
-      >
-        Reject
-      </Button>
-    </div>
-  ) : (
-    <Typography className="text-xs font-normal text-blue-gray-500">
-      No action available
-    </Typography>
-  )}
-</td>
+                        {customerVerify === "Pending" ? (
+                          <div className="flex gap-2">
+                            <Button
+                              size="sm"
+                              color="green"
+                              onClick={() => handleAccept(_id)}
+                            >
+                              Accept
+                            </Button>
+                            <Button
+                              size="sm"
+                              color="red"
+                              onClick={() => handleReject(_id)}
+                            >
+                              Reject
+                            </Button>
+                          </div>
+                        ) : (
+                          <Typography className="text-xs font-normal text-blue-gray-500">
+                            No action available
+                          </Typography>
+                        )}
+                      </td>
 
                     </tr>
                   );

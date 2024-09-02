@@ -19,7 +19,7 @@ import History from "@/pages/Customer/History/history";
 import CustomerDashboard from "@/pages/Customer/Dashboard/customerDashboard";
 import PaymentVerify from "@/pages/Customer/PaymentVerify/paymentVerify";
 import ReportData from "@/pages/Admin/report/report";
-import NotFound from "@/pages/NotFound"; // 404 Page
+// import NotFound from "@/pages/NotFound"; // 404 Page
 
 const icon = {
   className: "w-5 h-5 text-inherit",
@@ -30,12 +30,12 @@ export const adminRoutes = [
     layout: "admin",
     pages: [
       { icon: <HomeIcon {...icon} />, name: "dashboard", path: "/home", element: <Home /> },
-      { icon: <UserIcon {...icon} />, name: "Customer", path: "/customer", element: <View /> },
-      { icon: <UserCircleIcon {...icon} />, name: "Salesman", path: "/salesman", element: <ViewSalesman /> },
-      { icon: <CreditCardIcon {...icon} />, name: "Payment", path: "/payment", element: <Payment /> },
-      { icon: <InformationCircleIcon {...icon} />, name: "Report", path: "/report", element: <ReportData /> },
+      { icon: <UserIcon {...icon} />, name: "Customer", path: "/customers", element: <View /> },
+      { icon: <UserCircleIcon {...icon} />, name: "Salesman", path: "/salesmans", element: <ViewSalesman /> },
+      { icon: <CreditCardIcon {...icon} />, name: "Payment", path: "/payments", element: <Payment /> },
+      { icon: <InformationCircleIcon {...icon} />, name: "Report", path: "/reports", element: <ReportData /> },
       { icon: <UserCircleIcon {...icon} />, name: "Profile", path: "/profile", element: <AdminProfile /> },
-      { path: "*", element: <NotFound /> }, // 404 Page
+      // { path: "*", element: <NotFound /> }, // 404 Page
     ],
   },
 ];
@@ -45,9 +45,9 @@ export const salesmanRoutes = [
     layout: "salesman",
     pages: [
       { icon: <HomeIcon {...icon} />, name: "dashboard", path: "/home", element: <HomeSalesman /> },
-      { icon: <UserIcon {...icon} />, name: "Collection", path: "/collection", element: <Collection /> },
+      { icon: <UserIcon {...icon} />, name: "Collection", path: "/collections", element: <Collection /> },
       { icon: <UserCircleIcon {...icon} />, name: "Profile", path: "/profile", element: <AdminProfile /> },
-      { path: "*", element: <NotFound /> }, // 404 Page
+      // { path: "*", element: <NotFound /> }, // 404 Page
     ],
   },
 ];
@@ -59,7 +59,7 @@ export const customerRoutes = [
       { icon: <HomeIcon {...icon} />, name: "dashboard", path: "/home", element: <CustomerDashboard /> },
       { icon: <CreditCardIcon {...icon} />, name: "Verify Payment", path: "/verify", element: <PaymentVerify /> },
       { icon: <UserCircleIcon {...icon} />, name: "Profile", path: "/profile", element: <AdminProfile /> },
-      { path: "*", element: <NotFound /> }, // 404 Page
+      // { path: "*", element: <NotFound /> }, // 404 Page
     ],
   },
 ];

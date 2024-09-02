@@ -3,15 +3,40 @@ import React from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 import { Dashboard, SalesmanDashboard, CustomerDashboard } from "@/layouts";
 import AuthRoutes from "./routes/AuthRoutes";
-import { SignIn, SignUp } from "./pages/auth";
+import { SignIn } from "./pages/auth";
 import PrivateRoute from "./routes/PrivateRoute";
-import { adminRoutes, salesmanRoutes, customerRoutes } from "@/routes";
+import { useSelector } from "react-redux";
 
 function App() {
+
+  const isLoggedIn = useSelector((state) => state.authReducer.isAuthenticated);
+  const userRole = useSelector((state) => state.authReducer?.user?.user);
+
+  let defaultRedirectPath = "/";
+  if (isLoggedIn) {
+    switch (userRole?.role) {
+      case "customer":
+        defaultRedirectPath = "/customer/home";
+        break;
+      case "admin":
+        defaultRedirectPath = "/admin/home";
+        break;
+      case "salesman":
+        defaultRedirectPath = "/salesman/home";
+        break;
+      default:
+        defaultRedirectPath = "/";
+        break;
+    }
+  } else {
+    defaultRedirectPath = "/sign-in";
+  }
+
   return (
     <Routes>
-    
-      <Route path="/sign-in" element={<SignIn />} />
+      {!isLoggedIn &&
+        <Route path="/sign-in" element={<SignIn />} />
+      }
       <Route element={<AuthRoutes />}>
         <Route
           path="/admin/*"
@@ -25,7 +50,7 @@ function App() {
           path="/customer/*"
           element={<PrivateRoute element={CustomerDashboard} allowedRoles={['customer']} />}
         />
-        <Route path="*" element={<Navigate to="/sign-in" replace />} />
+        <Route path="*" element={<Navigate to={defaultRedirectPath} />} />
       </Route>
     </Routes>
   );

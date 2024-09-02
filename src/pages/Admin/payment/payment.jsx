@@ -9,11 +9,12 @@ import { paymentHistory } from '@/store/action/payment.action';
 import { useDispatch, useSelector } from 'react-redux';
 import Pagination from '@/components/pagination/pagination';
 
-const PAGE_SIZE = 5;
+const PAGE_SIZE = 10;
 
 const Payment = () => {
 
   const [currentPage, setCurrentPage] = useState(1);
+  const [searchQuery, setSearchQuery] = useState('');
 
   const dispatch = useDispatch()
 
@@ -32,9 +33,25 @@ const Payment = () => {
     return `${dateObj.toLocaleDateString()} ${dateObj.toLocaleTimeString()}`;
   };
 
-  const totalPages = Math.ceil(paymentsData.length / PAGE_SIZE);
+  const sortedData = [...paymentsData].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 
-  const currentData = paymentsData.slice(
+
+  const filteredData = sortedData.filter(pay =>
+    pay.salesman?.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    pay.customerName?.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    pay.amount.toString().toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+
+  // Update page number and current data when search query changes
+  useEffect(() => {
+    setCurrentPage(1); // Reset page to 1 when search query changes
+  }, [searchQuery]);
+
+
+  const totalPages = Math.ceil(filteredData.length / PAGE_SIZE);
+
+  const currentData = filteredData.slice(
     (currentPage - 1) * PAGE_SIZE,
     currentPage * PAGE_SIZE
   );
@@ -43,17 +60,23 @@ const Payment = () => {
     setCurrentPage(pageNumber);
   };
 
-
-
-
   return (
     <div className="mt-12 mb-8 flex flex-col gap-12">
       <Card>
         <CardHeader variant="gradient" color="gray" className="mb-8 p-6 flex justify-between items-center">
           <Typography variant="h6" color="white">
-            Payment List
+            Payments List
           </Typography>
         </CardHeader>
+        <div className="px-6 py-4 flex max-sm:justify-center md:justify-end">
+          <input
+            type="text"
+            placeholder="Search..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="p-2 border border-gray-300 rounded"
+          />
+        </div>
         <CardBody className="overflow-x-auto px-0 pt-0 pb-2">
           {currentData.length === 0 ? (
             <Typography className="text-center py-4">No data found</Typography>
@@ -80,8 +103,8 @@ const Payment = () => {
                 {currentData?.map((payment, key) => {
                   const { _id, salesman, customerName, amount, date, customerVerify } = payment;
                   const className = `py-3 px-5 ${key === currentData.length - 1
-                      ? ""
-                      : "border-b border-blue-gray-50"
+                    ? ""
+                    : "border-b border-blue-gray-50"
                     }`;
 
                   return (

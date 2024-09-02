@@ -73,8 +73,9 @@ export function DashboardNavbar() {
 
 
 
-  const paymentsData = useSelector((state) => state.notificationReducer.notification);
+  const sortedData = useSelector((state) => state.notificationReducer.notification);
 
+  const paymentsData = [...sortedData].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 
 
   const fetchData = async () => {
@@ -114,6 +115,8 @@ export function DashboardNavbar() {
       navigate("/sign-in");
     }
   };
+
+
 
 
 
@@ -189,10 +192,16 @@ export function DashboardNavbar() {
           {UserData === "customer" && (
             <Menu>
               <MenuHandler>
-                <IconButton variant="text" color="blue-gray">
+                <IconButton variant="text" color="blue-gray" className="relative">
+                  {paymentsData.length > 0 &&
+                    <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold px-1.5 py-0.5 rounded-full">
+                      {paymentsData.length}
+                    </span>
+                  }
                   <BellIcon className="h-5 w-5 text-blue-gray-500" />
                 </IconButton>
               </MenuHandler>
+
               <MenuList className="w-auto border-0">
                 <MenuItem className="flex flex-col gap-4">
                   {paymentsData.length > 0 ? (
@@ -222,7 +231,7 @@ export function DashboardNavbar() {
                         <div
                           className="cursor-pointer"
                           aria-label="Close notification"
-                          onClick={() => {handleUpdate(payment._id)}}
+                          onClick={() => { handleUpdate(payment._id) }}
                         >
                           <XMarkIcon className="h-4 w-4 text-blue-gray-500" />
                         </div>

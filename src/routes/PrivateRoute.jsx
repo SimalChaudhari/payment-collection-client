@@ -21,7 +21,7 @@ const PrivateRoute = ({ element: Element, allowedRoles, ...rest }) => {
       return <Element {...rest} />;
     } else {
       // Redirect to the appropriate dashboard based on the user's role
-      const redirectPath = roleBasedRedirects[role] || '/sign-in';
+      const redirectPath = roleBasedRedirects[role] ;
       return <Navigate to={redirectPath} replace />;
     }
   } else {

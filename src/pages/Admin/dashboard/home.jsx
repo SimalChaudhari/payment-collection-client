@@ -17,21 +17,21 @@ const iconMapping = {
     title: "Total Amount",
     icon: BanknotesIcon,
     formatValue: (value) => `₹${value}`, // Formatting for amount
-    link: "/admin/payment" // Add link for Salesmen
+    link: "/admin/payments" // Add link for Salesmen
 
   },
   customerCount: {
     title: "Customers",
     icon: UsersIcon,
     formatValue: (value) => value.toString(), // Convert to string
-    link: "/admin/customer" // Add link for Salesmen
+    link: "/admin/customers" // Add link for Salesmen
 
   },
   salesmanCount: {
     title: "Salesmen",
     icon: UserPlusIcon,
     formatValue: (value) => value.toString(), // Convert to string
-    link: "/admin/salesman" // Add link for Salesmen
+    link: "/admin/salesmans" // Add link for Salesmen
   },
 };
 

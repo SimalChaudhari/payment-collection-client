@@ -17,7 +17,7 @@ export const register = (userData) => {
 };
 
 
-export const login = (email, password,role) => {
+export const login = (email, password) => {
   return async (dispatch) => {
     try {
       // Make an actual API request to your backend
