@@ -4,15 +4,16 @@ import {
   CardHeader,
   CardBody,
   Typography,
-  Select,
-  Option
+  IconButton,
 } from "@material-tailwind/react";
 import { useDispatch, useSelector } from 'react-redux';
 import { reportSummary } from '@/store/action/report.action';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import Pagination from '@/components/pagination/pagination';
-
+import { FaFilePdf, FaFileExcel, FaDownload } from 'react-icons/fa'; // Import icons
+import jsPDF from 'jspdf';
+import * as XLSX from 'xlsx';
 const PAGE_SIZE = 5;
 
 const Report = () => {
@@ -25,7 +26,6 @@ const Report = () => {
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
 
-
   useEffect(() => {
     const fetchData = async () => {
       await dispatch(reportSummary());
@@ -33,7 +33,6 @@ const Report = () => {
 
     fetchData();
   }, [dispatch]);
-
 
   const handleFilter = () => {
     let filteredData = reportData;
@@ -57,24 +56,101 @@ const Report = () => {
   };
 
   const filteredData = handleFilter();
-
   const totalPages = Math.ceil(filteredData.length / PAGE_SIZE);
-
   const currentData = filteredData.slice(
     (currentPage - 1) * PAGE_SIZE,
     currentPage * PAGE_SIZE
   );
+
   const formatDateTime = (isoDate) => {
     const dateObj = new Date(isoDate);
     return `${dateObj.toLocaleDateString()} ${dateObj.toLocaleTimeString()}`;
   };
 
-
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
   };
 
-
+  // Function to download a report by its ID
+  const downloadReportById = (reportId, payment, format) => {
+    const doc = new jsPDF();
+  
+    // Set the font and size for the title
+    doc.setFont("Helvetica", "bold");
+    doc.setFontSize(16);
+  
+    // Add a title
+    doc.text("Report Summary", 105, 20, null, null, "center");
+  
+    // Add a separator line
+    doc.setLineWidth(0.5);
+    doc.line(20, 25, 190, 25);
+  
+    // Set the font size and style for the content
+    doc.setFontSize(12);
+    doc.setFont("Helvetica", "bold");
+  
+    // Payment Information Header
+    doc.text("Payment Information", 20, 40);
+  
+    // Set font size and style for the details
+    doc.setFontSize(10);
+    doc.setFont("Helvetica", "normal");
+  
+    // Payment Information Details
+    doc.text(`Salesman Name: ${payment.salesman?.name || "NA"}`, 30, 50);
+    doc.text(`Customer Name: ${payment.customerName?.name || "NA"}`, 30, 60);
+    doc.text(`Amount: $${payment.amount}`, 30, 70);
+    doc.text(`Date: ${new Date(payment.date).toLocaleString()}`, 30, 80);
+  
+    // Add a footer with the report ID
+    doc.setFontSize(10);
+    doc.setFont("Helvetica", "italic");
+    doc.text(`Report ID: ${payment._id}`, 105, 280, null, null, "center");
+  
+    // Save the document
+    doc.save(`report_${payment._id}.pdf`);
+  };
+  
+  const downloadReportExcelById = (reportId, payment, format) => {
+    // Create a new workbook and worksheet
+    const wb = XLSX.utils.book_new();
+  
+    // Create an array representing the title, header, and the data
+    const ws_data = [
+      ["Report Summary"], // Title in the first line
+      ["Salesman Name", "Customer Name", "Amount", "Date"], // Headers in the second line
+      [payment.salesman?.name || "NA", payment.customerName?.name || "NA", `$${payment.amount}`, new Date(payment.date).toLocaleString()] // Values in the third line
+    ];
+  
+    // Add data to the worksheet
+    const ws = XLSX.utils.aoa_to_sheet(ws_data);
+  
+    // Merge cells for the title to center it across the columns (A1 to D1)
+    ws['!merges'] = [{ s: { r: 0, c: 0 }, e: { r: 0, c: 3 } }]; // Merging A1 to D1
+  
+    // Apply styling for the title (bold and centered)
+    ws['A1'].s = {
+      font: { bold: true, sz: 16 }, // Bold and larger font size
+      alignment: { horizontal: "center", vertical: "center" } // Center alignment
+    };
+  
+    // Optionally, you can apply bold styling to the header row
+    ["A2", "B2", "C2", "D2"].forEach(cell => {
+      if (!ws[cell]) ws[cell] = {};
+      ws[cell].s = {
+        font: { bold: true }, // Bold headers
+        alignment: { horizontal: "center", vertical: "center" } // Center headers
+      };
+    });
+  
+    // Append the worksheet to the workbook
+    XLSX.utils.book_append_sheet(wb, ws, "Report");
+  
+    // Generate the XLSX file and download it
+    const filename = `report_${payment._id}.xlsx`;
+    XLSX.writeFile(wb, filename);
+  };
 
 
   return (
@@ -84,101 +160,25 @@ const Report = () => {
           <Typography variant="h6" color="white">
             Reports
           </Typography>
+          {/* 
+          <div className="flex space-x-4">
+            <IconButton
+              onClick={() => downloadAllReports('pdf')}
+              variant="gradient"
+              color="red"
+            >
+              <FaFilePdf />
+            </IconButton>
+            <IconButton
+              onClick={() => downloadAllReports('excel')}
+              variant="gradient"
+              color="green"
+            >
+              <FaFileExcel />
+            </IconButton>
+          </div>
+          */}
         </CardHeader>
-                <div className="p-4 flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4">
-  {/* Customer and Salesman Selection Dropdown */}
-          <div className="flex flex-col md:flex-row md:items-center space-y-4 md:space-y-0 md:space-x-4 w-full">
-            <div className="relative w-full md:max-w-[200px]">
-              <select
-                value={selectedCustomer}
-                onChange={(e) => setSelectedCustomer(e.target.value)}
-                className="peer h-full w-full rounded-md border border-gray-300 bg-transparent px-3 py-2.5 text-sm text-gray-700 placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:outline-none"
-              >
-                <option value="">All Customers</option>
-                {reportData.map((report, index) => (
-                  <option key={index} value={report.customerName?.name}>
-                    {report.customerName?.name}
-                  </option>
-                ))}
-              </select>
-              <label className="pointer-events-none absolute left-0 -top-1.5 flex h-full w-full select-none text-[11px] font-normal leading-tight text-blue-gray-400 transition-all peer-placeholder-shown:text-sm peer-placeholder-shown:leading-[3.75] peer-placeholder-shown:text-blue-gray-500 peer-focus:text-[11px] peer-focus:leading-tight peer-focus:text-gray-900">
-                {/* Add any necessary label content here */}
-              </label>
-            </div>
-
-            <div className="relative w-full md:max-w-[200px]">
-              <select
-                value={selectedSalesman}
-                onChange={(e) => setSelectedSalesman(e.target.value)}
-                className="peer h-full w-full rounded-md border border-gray-300 bg-transparent px-3 py-2.5 text-sm text-gray-700 placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:outline-none"
-              >
-                <option value="">All Salesmans</option>
-                {reportData.map((report, index) => (
-                  <option key={index} value={report.salesman?.name}>
-                    {report.salesman?.name}
-                  </option>
-                ))}
-              </select>
-              <label className="pointer-events-none absolute left-0 -top-1.5 flex h-full w-full select-none text-[11px] font-normal leading-tight text-blue-gray-400 transition-all peer-placeholder-shown:text-sm peer-placeholder-shown:leading-[3.75] peer-placeholder-shown:text-blue-gray-500 peer-focus:text-[11px] peer-focus:leading-tight peer-focus:text-gray-900">
-                {/* Add any necessary label content here */}
-              </label>
-            </div>
-
-          {/* Date Range Picker */}
-          <div id="date-range-picker" className="flex items-center">
-            <div className="relative">
-              <div className="absolute z-20 inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
-                <svg
-                  className="w-4 h-4 text-gray-500 dark:text-gray-400"
-                  aria-hidden="true"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                >
-                  <path d="M20 4a2 2 0 0 0-2-2h-2V1a1 1 0 0 0-2 0v1h-3V1a1 1 0 0 0-2 0v1H6V1a1 1 0 0 0-2 0v1H2a2 2 0 0 0-2 2v2h20V4ZM0 18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8H0v10Zm5-8h10a1 1 0 0 1 0 2H5a1 1 0 0 1 0-2Z" />
-                </svg>
-              </div>
-              <DatePicker
-                selected={startDate}
-                onChange={(date) => setStartDate(date)}
-                selectsStart
-                startDate={startDate}
-                endDate={endDate}
-                className=" border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                placeholderText="Select date start"
-              />
-            </div>
-            <span className="mx-4 text-gray-500">to</span>
-            <div className="relative">
-              <div className="absolute z-20 inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
-                <svg
-                  className="w-4 h-4 text-gray-500 dark:text-gray-400"
-                  aria-hidden="true"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                >
-                  <path d="M20 4a2 2 0 0 0-2-2h-2V1a1 1 0 0 0-2 0v1h-3V1a1 1 0 0 0-2 0v1H6V1a1 1 0 0 0-2 0v1H2a2 2 0 0 0-2 2v2h20V4ZM0 18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8H0v10Zm5-8h10a1 1 0 0 1 0 2H5a1 1 0 0 1 0-2Z" />
-                </svg>
-              </div>
-              <DatePicker
-                selected={endDate}
-                onChange={(date) => setEndDate(date)}
-                selectsEnd
-                startDate={startDate}
-                endDate={endDate}
-                minDate={startDate}
-                className="border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                placeholderText="Select date end"
-              />
-            </div>
-          </div>
-          </div>
-
-          </div>
-
-
-
         <CardBody className="overflow-x-auto px-0 pt-0 pb-2">
           {currentData.length === 0 ? (
             <Typography className="text-center py-4">No data found</Typography>
@@ -186,7 +186,7 @@ const Report = () => {
             <table className="w-full min-w-[640px] table-auto">
               <thead>
                 <tr>
-                  {["SNo", "Salesman Name", "Customer Name", "Amount", "Date"].map((el) => (
+                  {["SNo", "Salesman Name", "Customer Name", "Amount", "Date", "Actions"].map((el) => (
                     <th
                       key={el}
                       className="border-b border-blue-gray-50 py-3 px-5 text-left"
@@ -243,6 +243,26 @@ const Report = () => {
                         <Typography className="text-xs font-semibold text-blue-gray-600">
                           {formatDateTime(date)}
                         </Typography>
+                      </td>
+                      <td className={className}>
+                        <div className="flex space-x-2">
+                          <IconButton
+                            onClick={() => downloadReportById(_id, payment, 'pdf')}
+                            variant="gradient"
+                            color="red"
+                            size="sm"
+                          >
+                            <FaDownload />
+                          </IconButton>
+                          <IconButton
+                            onClick={() => downloadReportExcelById(_id,payment, 'excel')}
+                            variant="gradient"
+                            color="green"
+                            size="sm"
+                          >
+                            <FaDownload />
+                          </IconButton>
+                        </div>
                       </td>
                     </tr>
                   );

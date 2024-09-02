@@ -15,6 +15,7 @@ import DeleteSalespersonDialog from '@/components/salesperson/DeleteSalespersonD
 import { salesman } from '@/store/action/salesman.action';
 import { useDispatch, useSelector } from 'react-redux';
 import Pagination from '@/components/pagination/pagination';
+import { EyeIcon, PencilSquareIcon, TrashIcon } from '@heroicons/react/24/solid';
 
 
 
@@ -171,30 +172,27 @@ const ViewSalesman = () => {
                     </td>
                   
                     <td className={className}>
-                      <div className="flex gap-2 ">
-                        <Button
-                          color="light-blue"
-                          size="sm"
-                          onClick={() => handleOpenViewDialog(_id)}
-                        >
-                          View
-                        </Button>
-                        <Button
-                          color="light-blue"
-                          size="sm"
-                          onClick={() => handleOpenEditDialog(_id)}
-                        >
-                          Edit
-                        </Button>
-                        <Button
-                          color="red"
-                          size="sm"
-                          onClick={() => handleOpenDeleteDialog(_id)}
-                        >
-                          Delete
-                        </Button>
-                      </div>
-                    </td>
+                        <div className="flex gap-2 flex-wrap">
+                          <div
+                            className="cursor-pointer"
+                            onClick={() => handleOpenViewDialog(_id)}
+                          >
+                            <EyeIcon className="h-5 w-5 text-blue-500 hover:text-blue-700" />
+                          </div>
+                          <div
+                            className="cursor-pointer"
+                            onClick={() => handleOpenEditDialog(_id)}
+                          >
+                            <PencilSquareIcon className="h-5 w-5 text-yellow-500 hover:text-yellow-700" />
+                          </div>
+                          <div
+                            className="cursor-pointer"
+                            onClick={() => handleOpenDeleteDialog(_id)}
+                          >
+                            <TrashIcon className="h-5 w-5 text-red-500 hover:text-red-700" />
+                          </div>
+                        </div>
+                      </td>
                   </tr>
                 );
               })}

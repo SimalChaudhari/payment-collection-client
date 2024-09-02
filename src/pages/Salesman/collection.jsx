@@ -14,6 +14,7 @@ import DeleteCollectionDialog from '@/components/collection/DeleteCollectionDial
 import { useDispatch, useSelector } from 'react-redux';
 import { collection } from '@/store/action/collection.action';
 import Pagination from '@/components/pagination/pagination';
+import { EyeIcon, PencilSquareIcon, TrashIcon } from '@heroicons/react/24/solid';
 
 const PAGE_SIZE = 5;
 
@@ -191,30 +192,28 @@ const Collection = () => {
                       </td>
 
                       <td className={className}>
-                        <div className="flex gap-2">
-                          <Button
-                            color="light-blue"
-                            size="sm"
+                        <div className="flex gap-2 flex-wrap">
+                          <div
+                            className="cursor-pointer"
                             onClick={() => handleOpenViewDialog(_id)}
                           >
-                            View
-                          </Button>
+                            <EyeIcon className="h-5 w-5 text-blue-500 hover:text-blue-700" />
+                          </div>
                           {customerVerify === "Pending" &&
-                            <Button
-                              color="green"
-                              size="sm"
+
+                            <div
+                              className="cursor-pointer"
                               onClick={() => handleOpenEditDialog(_id)}
                             >
-                              Edit
-                            </Button>
+                              <PencilSquareIcon className="h-5 w-5 text-yellow-500 hover:text-yellow-700" />
+                            </div>
                           }
-                          <Button
-                            color="red"
-                            size="sm"
+                          <div
+                            className="cursor-pointer"
                             onClick={() => handleOpenDeleteDialog(_id)}
                           >
-                            Delete
-                          </Button>
+                            <TrashIcon className="h-5 w-5 text-red-500 hover:text-red-700" />
+                          </div>
                         </div>
                       </td>
 

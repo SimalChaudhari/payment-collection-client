@@ -13,6 +13,7 @@ import DeleteCustomerDialog from '@/components/customer/DeleteCustomerDialog';
 import { customer } from '@/store/action/customer.action';
 import { useDispatch, useSelector } from 'react-redux';
 import Pagination from '@/components/pagination/pagination';
+import { EyeIcon, PencilSquareIcon, TrashIcon } from '@heroicons/react/24/solid';
 
 const PAGE_SIZE = 4;
 
@@ -120,93 +121,90 @@ const View = () => {
           {currentData.length === 0 ? (
             <Typography className="text-center py-4">No data found</Typography>
           ) : (
-          <table className="w-full min-w-full md:min-w-[640px] table-auto">
-            <thead>
-              <tr>
-                {["SNo", "Name", "Email", "Mobile", "Actions"].map((el) => (
-                  <th
-                    key={el}
-                    className="border-b border-blue-gray-50 py-3 px-5 text-left"
-                  >
-                    <Typography
-                      variant="small"
-                      className="text-[11px] font-bold uppercase text-blue-gray-400"
+            <table className="w-full min-w-full md:min-w-[640px] table-auto">
+              <thead>
+                <tr>
+                  {["SNo", "Name", "Email", "Mobile", "Actions"].map((el) => (
+                    <th
+                      key={el}
+                      className="border-b border-blue-gray-50 py-3 px-5 text-left"
                     >
-                      {el}
-                    </Typography>
-                  </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {currentData.map((customer, key) => {
-                const { _id, name, email, mobile } = customer;
-                const className = `py-3 px-5 ${key === currentData.length - 1
+                      <Typography
+                        variant="small"
+                        className="text-[11px] font-bold uppercase text-blue-gray-400"
+                      >
+                        {el}
+                      </Typography>
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {currentData.map((customer, key) => {
+                  const { _id, name, email, mobile } = customer;
+                  const className = `py-3 px-5 ${key === currentData.length - 1
                     ? ""
                     : "border-b border-blue-gray-50"
-                  }`;
+                    }`;
 
-                return (
-                  <tr key={_id}>
-                    <td className={className}>
-                      <Typography
-                        variant="small"
-                        color="blue-gray"
-                        className="font-semibold"
-                      >
-                        {(currentPage - 1) * PAGE_SIZE + key + 1}
-                      </Typography>
-                    </td>
-                    <td className={className}>
-                      <Typography
-                        variant="small"
-                        color="blue-gray"
-                        className="font-semibold"
-                      >
-                        {name}
-                      </Typography>
-                    </td>
-                    <td className={className}>
-                      <Typography className="text-xs font-normal text-blue-gray-500">
-                        {email}
-                      </Typography>
-                    </td>
-                    <td className={className}>
-                      <Typography className="text-xs font-normal text-blue-gray-500">
-                        {mobile}
-                      </Typography>
-                    </td>
-                    <td className={className}>
-                      <div className="flex gap-2 flex-wrap">
-                        <Button
-                          color="light-blue"
-                          size="sm"
-                          onClick={() => handleOpenViewDialog(_id)}
+                  return (
+                    <tr key={_id}>
+                      <td className={className}>
+                        <Typography
+                          variant="small"
+                          color="blue-gray"
+                          className="font-semibold"
                         >
-                          View
-                        </Button>
-                        <Button
-                          color="light-blue"
-                          size="sm"
-                          onClick={() => handleOpenEditDialog(_id)}
+                          {(currentPage - 1) * PAGE_SIZE + key + 1}
+                        </Typography>
+                      </td>
+                      <td className={className}>
+                        <Typography
+                          variant="small"
+                          color="blue-gray"
+                          className="font-semibold"
                         >
-                          Edit
-                        </Button>
-                        <Button
-                          color="red"
-                          size="sm"
-                          onClick={() => handleOpenDeleteDialog(_id)}
-                        >
-                          Delete
-                        </Button>
-                      </div>
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
-            )}
+                          {name}
+                        </Typography>
+                      </td>
+                      <td className={className}>
+                        <Typography className="text-xs font-normal text-blue-gray-500">
+                          {email}
+                        </Typography>
+                      </td>
+                      <td className={className}>
+                        <Typography className="text-xs font-normal text-blue-gray-500">
+                          {mobile}
+                        </Typography>
+                      </td>
+                      <td className={className}>
+                        <div className="flex gap-2 flex-wrap">
+                          <div
+                            className="cursor-pointer"
+                            onClick={() => handleOpenViewDialog(_id)}
+                          >
+                            <EyeIcon className="h-5 w-5 text-blue-500 hover:text-blue-700" />
+                          </div>
+                          <div
+                            className="cursor-pointer"
+                            onClick={() => handleOpenEditDialog(_id)}
+                          >
+                            <PencilSquareIcon className="h-5 w-5 text-yellow-500 hover:text-yellow-700" />
+                          </div>
+                          <div
+                            className="cursor-pointer"
+                            onClick={() => handleOpenDeleteDialog(_id)}
+                          >
+                            <TrashIcon className="h-5 w-5 text-red-500 hover:text-red-700" />
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          )}
         </CardBody>
 
         {currentData.length === 0 ? null : (
