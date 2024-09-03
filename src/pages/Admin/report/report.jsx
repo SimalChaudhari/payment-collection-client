@@ -14,6 +14,7 @@ import 'react-datepicker/dist/react-datepicker.css';
 import Pagination from '@/components/pagination/pagination';
 import { FaDownload } from 'react-icons/fa';
 import * as XLSX from 'xlsx';
+import { formatDate, formatTime } from '@/components/date/DateFormat';
 
 const PAGE_SIZE = 10;
 
@@ -221,14 +222,15 @@ const Report = () => {
             <table className="w-full min-w-[640px] table-auto">
               <thead>
                 <tr>
-                  {["SNo", "Salesman Name", "Customer Name", "Amount", "Date"].map((el) => (
+                  {["SNo", "Salesman Name", "Customer Name", "Amount", "Date","Completion Date"].map((el) => (
                     <th
                       key={el}
                       className="border-b border-blue-gray-50 py-3 px-5 text-left"
                     >
                       <Typography
                         variant="small"
-                        className="text-[11px] font-bold uppercase text-blue-gray-400"
+                        color="blue-gray"
+                        className="font-bold uppercase"
                       >
                         {el}
                       </Typography>
@@ -238,7 +240,7 @@ const Report = () => {
               </thead>
               <tbody>
                 {currentData.map((payment, key) => {
-                  const { _id, salesman, customerName, amount, date } = payment;
+                  const { _id, salesman, customerName, amount, date ,statusUpdatedAt} = payment;
                   const className = `py-3 px-5 ${key === currentData.length - 1
                     ? ""
                     : "border-b border-blue-gray-50"
@@ -247,36 +249,45 @@ const Report = () => {
                   return (
                     <tr key={_id}>
                       <td className={className}>
-                        <Typography
-                          variant="small"
-                          color="blue-gray"
-                          className="font-semibold"
+                         <Typography
+                         className="text-sm font-normal text-blue-gray-500"
                         >
                           {(currentPage - 1) * PAGE_SIZE + key + 1}
                         </Typography>
                       </td>
                       <td className={className}>
-                        <Typography
-                          variant="small"
-                          color="blue-gray"
-                          className="font-semibold"
+                         <Typography
+                         className="text-sm font-normal text-blue-gray-500"
                         >
                           {salesman?.name || "NA"}
                         </Typography>
                       </td>
                       <td className={className}>
-                        <Typography className="text-xs font-normal text-blue-gray-500">
+                        <Typography className="text-sm font-normal text-blue-gray-500">
                           {customerName?.name || "NA"}
                         </Typography>
                       </td>
                       <td className={className}>
-                        <Typography className="text-xs font-normal text-blue-gray-500">
+                        <Typography className="text-sm font-normal text-blue-gray-500">
                           {amount}
                         </Typography>
                       </td>
                       <td className={className}>
-                        <Typography className="text-xs font-semibold text-blue-gray-600">
-                          {formatDateTime(date)}
+                        <Typography className="text-sm font-normal text-blue-gray-500">
+                          {formatDate(date)}
+                        </Typography>
+                      </td>
+
+                       <td className={className}>
+                        <Typography className="text-sm font-normal text-blue-gray-500">
+                          {statusUpdatedAt ? formatDate(statusUpdatedAt) :
+                            <Chip
+                              variant="gradient"
+                              color={"blue"}
+                              value={"In Progress"}
+                              className="py-0.5 px-2 text-[11px] font-medium w-fit"
+                            />
+                          }
                         </Typography>
                       </td>
                     </tr>

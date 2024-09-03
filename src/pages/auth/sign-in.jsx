@@ -91,9 +91,17 @@ export function SignIn() {
 
                 {loader ? "Loading..." : "Login"}
               </Button>
+
+
             </Form>
           )}
         </Formik>
+
+        <div className="mt-4 text-end">
+          <Link to="/forgot-password" className="text-blue-500 hover:underline">
+            Forgot Password?
+          </Link>
+        </div>
       </div>
     </section>
   );

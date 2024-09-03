@@ -91,33 +91,33 @@ const View = () => {
   return (
     <div className="mt-12 mb-8 flex flex-col gap-12">
       <Card>
-        <CardHeader variant="gradient" color="gray" className="mb-8 p-6 flex flex-col md:flex-row justify-between items-center">
+        <CardHeader variant="gradient" color="gray" className="mb-8 p-6 flex justify-between items-center">
           <Typography variant="h6" color="white">
             Customers List
           </Typography>
           <Button
             color="light-blue"
             size="sm"
-            className="mt-4 md:mt-0"
+            className="ml-auto"
             onClick={handleOpenAddDialog}
           >
             Add Customer
           </Button>
         </CardHeader>
         <div className="px-6 py-4 flex max-sm:justify-center md:justify-end">
-        <input
-          type="text"
-          placeholder="Search..."
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          className="p-2 border border-gray-300 rounded"
-        />
-      </div>
+          <input
+            type="text"
+            placeholder="Search..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="p-2 border border-gray-300 rounded"
+          />
+        </div>
         <CardBody className="overflow-x-auto px-0 pt-0 pb-2">
           {currentData.length === 0 ? (
             <Typography className="text-center py-4">No data found</Typography>
           ) : (
-            <table className="w-full min-w-full md:min-w-[640px] table-auto">
+            <table className="w-full min-w-[640px] table-auto">
               <thead>
                 <tr>
                   {["SNo", "Name", "Email", "Mobile", "Actions"].map((el) => (
@@ -127,7 +127,8 @@ const View = () => {
                     >
                       <Typography
                         variant="small"
-                        className="text-[11px] font-bold uppercase text-blue-gray-400"
+                        color="blue-gray"
+                        className="font-bold uppercase"
                       >
                         {el}
                       </Typography>
@@ -147,29 +148,23 @@ const View = () => {
                     <tr key={_id}>
                       <td className={className}>
                         <Typography
-                          variant="small"
-                          color="blue-gray"
-                          className="font-semibold"
-                        >
+                          className="text-sm font-normal text-blue-gray-500">
                           {(currentPage - 1) * PAGE_SIZE + key + 1}
                         </Typography>
                       </td>
                       <td className={className}>
                         <Typography
-                          variant="small"
-                          color="blue-gray"
-                          className="font-semibold"
-                        >
+                          className="text-sm font-normal text-blue-gray-500">
                           {name}
                         </Typography>
                       </td>
                       <td className={className}>
-                        <Typography className="text-xs font-normal text-blue-gray-500">
+                        <Typography className="text-sm font-normal text-blue-gray-500">
                           {email}
                         </Typography>
                       </td>
                       <td className={className}>
-                        <Typography className="text-xs font-normal text-blue-gray-500">
+                        <Typography className="text-sm font-normal text-blue-gray-500">
                           {mobile}
                         </Typography>
                       </td>

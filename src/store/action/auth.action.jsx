@@ -74,3 +74,42 @@ export const resetPassword = (data) => {
       }
     };
   };
+
+
+  export const forgotPasswordAPI = (data) => {
+
+    return async (dispatch) => {
+      try {
+        const token = localStorage.getItem('token');
+        await axiosInstance.post(`/auth/forget-password`,data,{
+           headers: {
+             Authorization: `Bearer ${token}`,
+           },
+         })
+         return true
+      } catch (error) {
+        console.log("🚀 ~ return ~ error:", error.response)
+        toast.error(error.response.data.message)
+        return false;
+      }
+    };
+  };
+
+  export const changePasswordAPI = (data) => {
+
+    return async (dispatch) => {
+      try {
+        const token = localStorage.getItem('token');
+        await axiosInstance.post(`/auth/new-password`,data,{
+           headers: {
+             Authorization: `Bearer ${token}`,
+           },
+         })
+         return true
+      } catch (error) {
+        toast.error(error.response.data.message)
+        return false;
+      }
+    };
+  };
+

@@ -9,6 +9,7 @@ import {
 import { paymentVerification, paymentVerified } from '@/store/action/payment.action';
 import { useDispatch, useSelector } from 'react-redux';
 import Pagination from '@/components/pagination/pagination';
+import { formatDate, formatTime } from '@/components/date/DateFormat';
 
 const PAGE_SIZE = 10;
 
@@ -102,14 +103,15 @@ const PaymentVerify = () => {
             <table className="w-full min-w-[640px] table-auto">
               <thead>
                 <tr>
-                  {["SNo", "Salesman Name", "Customer Name", "Amount", "Date", "Status", "Action"].map((el) => (
+                  {["SNo", "Salesman Name", "Customer Name", "Amount", "Create Date", "Status", "Completion Date", "Action"].map((el) => (
                     <th
                       key={el}
                       className="border-b border-blue-gray-50 py-3 px-5 text-left"
                     >
                       <Typography
                         variant="small"
-                        className="text-[11px] font-bold uppercase text-blue-gray-400"
+                        color="blue-gray"
+                        className="font-bold uppercase"
                       >
                         {el}
                       </Typography>
@@ -119,7 +121,7 @@ const PaymentVerify = () => {
               </thead>
               <tbody>
                 {currentData?.map((payment, key) => {
-                  const { _id, salesman, customerName, amount, date, customerVerify } = payment;
+                  const { _id, salesman, customerName, amount, date, customerVerify, statusUpdatedAt } = payment;
                   const className = `py-3 px-5 ${key === currentData.length - 1
                     ? ""
                     : "border-b border-blue-gray-50"
@@ -128,36 +130,28 @@ const PaymentVerify = () => {
                   return (
                     <tr key={_id}>
                       <td className={className}>
-                        <Typography
-                          variant="small"
-                          color="blue-gray"
-                          className="font-semibold"
-                        >
+                        <Typography className="text-sm font-normal text-blue-gray-500">
                           {(currentPage - 1) * PAGE_SIZE + key + 1}
                         </Typography>
                       </td>
                       <td className={className}>
-                        <Typography
-                          variant="small"
-                          color="blue-gray"
-                          className="font-semibold"
-                        >
+                        <Typography className="text-sm font-normal text-blue-gray-500">
                           {salesman?.name || "NA"}
                         </Typography>
                       </td>
                       <td className={className}>
-                        <Typography className="text-xs font-normal text-blue-gray-500">
+                        <Typography className="text-sm font-normal text-blue-gray-500">
                           {customerName.name}
                         </Typography>
                       </td>
                       <td className={className}>
-                        <Typography className="text-xs font-normal text-blue-gray-500">
+                        <Typography className="text-sm font-normal text-blue-gray-500">
                           {amount}
                         </Typography>
                       </td>
                       <td className={className}>
-                        <Typography className="text-xs font-semibold text-blue-gray-600">
-                          {formatDateTime(date)}
+                        <Typography className="text-sm font-normal text-blue-gray-500">
+                          {formatDate(date)}
                         </Typography>
                       </td>
                       <td className={className}>
@@ -168,6 +162,19 @@ const PaymentVerify = () => {
                           className="py-0.5 px-2 text-[11px] font-medium w-fit"
                         />
                       </td>
+                      <td className={className}>
+                        <Typography className="text-sm font-normal text-blue-gray-500">
+                          {statusUpdatedAt ? formatDate(statusUpdatedAt) :
+                            <Chip
+                              variant="gradient"
+                              color={"blue"}
+                              value={"In Progress"}
+                              className="py-0.5 px-2 text-[11px] font-medium w-fit"
+                            />
+                          }
+                        </Typography>
+                      </td>
+
                       <td className={className}>
                         {customerVerify === "Pending" ? (
                           <div className="flex gap-2">
@@ -187,7 +194,7 @@ const PaymentVerify = () => {
                             </Button>
                           </div>
                         ) : (
-                          <Typography className="text-xs font-normal text-blue-gray-500">
+                          <Typography className="text-sm font-normal text-blue-gray-500">
                             No action available
                           </Typography>
                         )}

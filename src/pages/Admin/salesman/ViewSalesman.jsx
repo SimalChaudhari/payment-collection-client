@@ -33,7 +33,7 @@ const ViewSalesman = () => {
   const dispatch = useDispatch()
 
   const salesmanData = useSelector((state) => state.salesmanReducer.salesman);
-  
+
   useEffect(() => {
     const fetchData = async () => {
       await dispatch(salesman());
@@ -42,8 +42,8 @@ const ViewSalesman = () => {
     fetchData();
   }, []); // Empty dependency array ensures it runs only once when the component mounts.
 
-   // Sort customers by creation date or a relevant field
-   const sortedData = [...salesmanData].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+  // Sort customers by creation date or a relevant field
+  const sortedData = [...salesmanData].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 
   const filteredData = sortedData.filter(customer =>
     customer.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -148,7 +148,8 @@ const ViewSalesman = () => {
                     >
                       <Typography
                         variant="small"
-                        className="text-[11px] font-bold uppercase text-blue-gray-400"
+                        color="blue-gray"
+                        className="font-bold uppercase"
                       >
                         {el}
                       </Typography>
@@ -160,8 +161,8 @@ const ViewSalesman = () => {
                 {currentData?.map((salesman, key) => {
                   const { _id, name, email, mobile } = salesman;
                   const className = `py-3 px-5 ${key === currentData.length - 1
-                      ? ""
-                      : "border-b border-blue-gray-50"
+                    ? ""
+                    : "border-b border-blue-gray-50"
                     }`;
 
                   return (
@@ -169,29 +170,24 @@ const ViewSalesman = () => {
                     <tr key={_id}>
                       <td className={className}>
                         <Typography
-                          variant="small"
-                          color="blue-gray"
-                          className="font-semibold"
-                        >
+                        className="text-sm font-normal text-blue-gray-500">
+                        
                           {(currentPage - 1) * PAGE_SIZE + key + 1}
                         </Typography>
                       </td>
                       <td className={className}>
                         <Typography
-                          variant="small"
-                          color="blue-gray"
-                          className="font-semibold"
-                        >
+                        className="text-sm font-normal text-blue-gray-500">
                           {name}
                         </Typography>
                       </td>
                       <td className={className}>
-                        <Typography className="text-xs font-normal text-blue-gray-500">
+                        <Typography className="text-sm font-normal text-blue-gray-500">
                           {email}
                         </Typography>
                       </td>
                       <td className={className}>
-                        <Typography className="text-xs font-normal text-blue-gray-500">
+                        <Typography className="text-sm font-normal text-blue-gray-500">
                           {mobile}
                         </Typography>
                       </td>

@@ -8,6 +8,7 @@ import {
 import { paymentHistory } from '@/store/action/payment.action';
 import { useDispatch, useSelector } from 'react-redux';
 import Pagination from '@/components/pagination/pagination';
+import { formatDate, formatTime } from '@/components/date/DateFormat';
 
 const PAGE_SIZE = 10;
 
@@ -28,10 +29,6 @@ const Payment = () => {
     fetchData();
   }, []); // Empty dependency array ensures it runs only once when the component mounts.
 
-  const formatDateTime = (isoDate) => {
-    const dateObj = new Date(isoDate);
-    return `${dateObj.toLocaleDateString()} ${dateObj.toLocaleTimeString()}`;
-  };
 
   const sortedData = [...paymentsData].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 
@@ -84,14 +81,15 @@ const Payment = () => {
             <table className="w-full min-w-[640px] table-auto">
               <thead>
                 <tr>
-                  {["SNo", "Salesman Name", "Customer Name", "Amount", "Date", "Status"].map((el) => (
+                  {["SNo", "Salesman Name", "Customer Name", "Amount", "Create Date", "Status", "Completion Date"].map((el) => (
                     <th
                       key={el}
                       className="border-b border-blue-gray-50 py-3 px-5 text-left"
                     >
                       <Typography
                         variant="small"
-                        className="text-[11px] font-bold uppercase text-blue-gray-400"
+                        color="blue-gray"
+                        className="font-bold uppercase"
                       >
                         {el}
                       </Typography>
@@ -101,7 +99,7 @@ const Payment = () => {
               </thead>
               <tbody>
                 {currentData?.map((payment, key) => {
-                  const { _id, salesman, customerName, amount, date, customerVerify } = payment;
+                  const { _id, salesman, customerName, amount, date, customerVerify, statusUpdatedAt } = payment;
                   const className = `py-3 px-5 ${key === currentData.length - 1
                     ? ""
                     : "border-b border-blue-gray-50"
@@ -111,37 +109,34 @@ const Payment = () => {
                     <tr key={_id}>
                       <td className={className}>
                         <Typography
-                          variant="small"
-                          color="blue-gray"
-                          className="font-semibold"
+                          className="text-sm font-normal text-blue-gray-500"
                         >
                           {(currentPage - 1) * PAGE_SIZE + key + 1}
                         </Typography>
                       </td>
                       <td className={className}>
                         <Typography
-                          variant="small"
-                          color="blue-gray"
-                          className="font-semibold"
+                          className="text-sm font-normal text-blue-gray-500"
                         >
                           {salesman?.name || "NA"}
                         </Typography>
                       </td>
                       <td className={className}>
-                        <Typography className="text-xs font-normal text-blue-gray-500">
+                        <Typography className="text-sm font-normal text-blue-gray-500">
                           {customerName?.name || "NA"}
                         </Typography>
                       </td>
                       <td className={className}>
-                        <Typography className="text-xs font-normal text-blue-gray-500">
+                        <Typography className="text-sm font-normal text-blue-gray-500">
                           {amount}
                         </Typography>
                       </td>
                       <td className={className}>
-                        <Typography className="text-xs font-semibold text-blue-gray-600">
-                          {formatDateTime(date)}
+                        <Typography className="text-sm font-normal text-blue-gray-500">
+                          {formatDate(date)}
                         </Typography>
                       </td>
+
                       <td className={className}>
                         <Chip
                           variant="gradient"
@@ -149,6 +144,19 @@ const Payment = () => {
                           value={customerVerify === "Accepted" ? "Accepted" : customerVerify === "Rejected" ? "Rejected" : "Pending"}
                           className="py-0.5 px-2 text-[11px] font-medium w-fit"
                         />
+                      </td>
+
+                      <td className={className}>
+                        <Typography className="text-sm font-normal text-blue-gray-500">
+                          {statusUpdatedAt ? formatDate(statusUpdatedAt) :
+                            <Chip
+                              variant="gradient"
+                              color={"blue"}
+                              value={"In Progress"}
+                              className="py-0.5 px-2 text-[11px] font-medium w-fit"
+                            />
+                          }
+                        </Typography>
                       </td>
 
                     </tr>

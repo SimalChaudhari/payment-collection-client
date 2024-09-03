@@ -6,6 +6,8 @@ import AuthRoutes from "./routes/AuthRoutes";
 import { SignIn } from "./pages/auth";
 import PrivateRoute from "./routes/PrivateRoute";
 import { useSelector } from "react-redux";
+import ForgotPassword from "./pages/auth/ForgotPassword";
+import ResetPassword from "./pages/auth/ResetPassword";
 
 function App() {
 
@@ -35,7 +37,11 @@ function App() {
   return (
     <Routes>
       {!isLoggedIn &&
-        <Route path="/sign-in" element={<SignIn />} />
+        <React.Fragment>
+          <Route path="/sign-in" element={<SignIn />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/change-password" element={<ResetPassword />} />
+        </React.Fragment>
       }
       <Route element={<AuthRoutes />}>
         <Route

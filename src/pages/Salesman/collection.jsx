@@ -15,6 +15,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { collection } from '@/store/action/collection.action';
 import Pagination from '@/components/pagination/pagination';
 import { EyeIcon, PencilSquareIcon, TrashIcon } from '@heroicons/react/24/solid';
+import { formatDate, formatTime } from '@/components/date/DateFormat';
 
 const PAGE_SIZE = 10;
 
@@ -31,7 +32,7 @@ const Collection = () => {
   const dispatch = useDispatch()
 
   const collectionData = useSelector((state) => state.collectionReducer.collectionList)
- 
+
 
   useEffect(() => {
     const fetchData = async () => {
@@ -153,14 +154,15 @@ const Collection = () => {
             <table className="w-full min-w-[640px] table-auto">
               <thead>
                 <tr>
-                  {["SNo", "Customer Name", "Amount", "Date", "Status", "Actions"].map((el) => (
+                  {["SNo", "Customer Name", "Amount", "Create Date", "Status", "Completion Date", "Action"].map((el) => (
                     <th
                       key={el}
                       className="border-b border-blue-gray-50 py-3 px-5 text-left"
                     >
                       <Typography
                         variant="small"
-                        className="text-[11px] font-bold uppercase text-blue-gray-400"
+                        color="blue-gray"
+                        className="font-bold uppercase"
                       >
                         {el}
                       </Typography>
@@ -170,7 +172,7 @@ const Collection = () => {
               </thead>
               <tbody>
                 {currentData.map((collection, key) => {
-                  const { _id, customerName, amount, customerVerify, date } = collection;
+                  const { _id, customerName, amount, customerVerify, date,statusUpdatedAt } = collection;
                   const className = `py-3 px-5 ${key === currentData.length - 1
                     ? ""
                     : "border-b border-blue-gray-50"
@@ -180,39 +182,49 @@ const Collection = () => {
                     <tr key={_id}>
                       <td className={className}>
                         <Typography
-                          variant="small"
-                          color="blue-gray"
-                          className="font-semibold"
+                          className="text-sm font-normal text-blue-gray-500"
                         >
                           {(currentPage - 1) * PAGE_SIZE + key + 1}
                         </Typography>
                       </td>
                       <td className={className}>
                         <Typography
-                          variant="small"
-                          color="blue-gray"
-                          className="font-semibold"
+                          className="text-sm font-normal text-blue-gray-500"
                         >
                           {customerName?.name}
                         </Typography>
                       </td>
                       <td className={className}>
-                        <Typography className="text-xs font-normal text-blue-gray-500">
+                        <Typography className="text-sm font-normal text-blue-gray-500">
                           {amount}
                         </Typography>
                       </td>
                       <td className={className}>
-                        <Typography className="text-xs font-normal text-blue-gray-500">
-                          {new Date(date).toISOString().split('T')[0]}
+                        <Typography className="text-sm font-normal text-blue-gray-500">
+                          {formatDate(date)}
                         </Typography>
                       </td>
                       <td className={className}>
-                        <Chip
-                          variant="gradient"
-                          color={customerVerify === "Accepted" ? "green" : customerVerify === "Rejected" ? "red" : "gray"}
-                          value={customerVerify === "Accepted" ? "Accepted" : customerVerify === "Rejected" ? "Rejected" : "Pending"}
-                          className="py-0.5 px-2 text-[11px] font-medium w-fit"
-                        />
+                      <Chip
+                        variant="gradient"
+                        color={customerVerify === "Accepted" ? "green" : customerVerify === "Rejected" ? "red" : "gray"}
+                        value={customerVerify === "Accepted" ? "Accepted" : customerVerify === "Rejected" ? "Rejected" : "Pending"}
+                        className="py-0.5 px-2 text-[11px] font-medium w-fit"
+                      />
+                    </td>
+                  
+                     
+                      <td className={className}>
+                        <Typography className="text-sm font-normal text-blue-gray-500">
+                          {statusUpdatedAt ? formatDate(statusUpdatedAt) :
+                            <Chip
+                              variant="gradient"
+                              color={"blue"}
+                              value={"In Progress"}
+                              className="py-0.5 px-2 text-[11px] font-medium w-fit"
+                            />
+                          }
+                        </Typography>
                       </td>
 
                       <td className={className}>
