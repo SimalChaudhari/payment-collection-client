@@ -10,7 +10,6 @@ import ForgotPassword from "./pages/auth/ForgotPassword";
 import ResetPassword from "./pages/auth/ResetPassword";
 
 function App() {
-
   const isLoggedIn = useSelector((state) => state.authReducer.isAuthenticated);
   const userRole = useSelector((state) => state.authReducer?.user?.user);
 
