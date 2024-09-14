@@ -11,6 +11,7 @@ const PrivateRoute = ({ element: Element, allowedRoles, ...rest }) => {
     admin: '/admin/home',
     salesman: '/salesman/home',
     customer: '/customer/home'
+    
   };
 
   // Check if user is logged in and has the required role

@@ -19,6 +19,7 @@ import History from "@/pages/Customer/History/history";
 import CustomerDashboard from "@/pages/Customer/Dashboard/customerDashboard";
 import PaymentVerify from "@/pages/Customer/PaymentVerify/paymentVerify";
 import ReportData from "@/pages/Admin/report/report";
+import ViewAddress from "./pages/Address/addressView";
 // import NotFound from "@/pages/NotFound"; // 404 Page
 
 const icon = {
@@ -34,6 +35,7 @@ export const adminRoutes = [
       { icon: <UserCircleIcon {...icon} />, name: "Salesman", path: "/salesmans", element: <ViewSalesman /> },
       { icon: <CreditCardIcon {...icon} />, name: "Payment", path: "/payments", element: <Payment /> },
       { icon: <InformationCircleIcon {...icon} />, name: "Report", path: "/reports", element: <ReportData /> },
+      { icon: <InformationCircleIcon {...icon} />, name: "Address", path: "/address", element: <ViewAddress /> },
       { icon: <UserCircleIcon {...icon} />, name: "Profile", path: "/profile", element: <AdminProfile /> },
       // { path: "*", element: <NotFound /> }, // 404 Page
     ],

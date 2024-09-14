@@ -1,5 +1,5 @@
 import { createStore, applyMiddleware, combineReducers } from 'redux';
-import {thunk} from 'redux-thunk';
+import { thunk } from 'redux-thunk';
 import { composeWithDevTools } from '@redux-devtools/extension';
 import authReducer from './reducer/authReducer';
 import collectionReducer from './reducer/collectionReducer';
@@ -9,6 +9,7 @@ import paymentReducer from './reducer/paymentReducer';
 import homeReducer from './reducer/homeReducer';
 import reportReducer from './reducer/reportReducer';
 import notificationReducer from './reducer/notificationReducer';
+import addressReducer from './reducer/addressReducer';
 
 
 const rootReducer = combineReducers({
@@ -19,7 +20,8 @@ const rootReducer = combineReducers({
     paymentReducer,
     reportReducer,
     collectionReducer,
-    notificationReducer
+    notificationReducer,
+    addressReducer
 })
 
 const middleware = [thunk];
