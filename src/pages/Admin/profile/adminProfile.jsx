@@ -14,6 +14,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 import { resetPassword } from "@/store/action/auth.action";
 import { editCustomer } from "@/store/action/customer.action";
+import { addCountryCode } from '@/utils/addCountryCode';
 
 export function AdminProfile() {
     const [isEditingPersonal, setIsEditingPersonal] = useState(false);
@@ -144,7 +145,7 @@ export function AdminProfile() {
                                     variant="small"
                                     className="font-normal text-blue-gray-600"
                                 >
-                                    {userData.mobile}
+                                    {addCountryCode(userData.mobile)}
                                 </Typography>
                             </div>
                         </div>
@@ -214,7 +215,7 @@ export function AdminProfile() {
                                             <strong>First Name:</strong> {formikAdmin.values.name}
                                         </Typography>
                                         <Typography variant="body2" className="mb-2">
-                                            <strong>Mobile:</strong> {formikAdmin.values.mobile}
+                                            <strong>Mobile:</strong> {addCountryCode(formikAdmin?.values?.mobile)}
                                         </Typography>
                                         <Typography variant="body2" className="mb-2">
                                             <strong>Email:</strong> {formikAdmin.values.email}

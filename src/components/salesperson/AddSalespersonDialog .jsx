@@ -1,5 +1,5 @@
 // components/AddCustomerDialog.jsx
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Dialog,
   DialogTitle,
@@ -7,50 +7,106 @@ import {
   DialogActions,
   TextField,
   Button,
-  CircularProgress
+  CircularProgress,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem
 } from '@mui/material';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { addSalesman, salesman } from '@/store/action/salesman.action';
+import { fetchAddress } from '@/store/action/address.action';
 
 // Validation schema using Yup
 const validationSchema = Yup.object({
   name: Yup.string().required('Name is required'),
   email: Yup.string()
-  .email('Invalid email format')
-  .matches(/^[^\s@]+@[^\s@]+\.(com)$/, 'Email must end with .com')
-  .required('Email is required'),
+    .email('Invalid email format')
+    .matches(/^[^\s@]+@[^\s@]+\.(com)$/, 'Email must end with .com')
+    .required('Email is required'),
   mobile: Yup.string()
     .required('Mobile number is required')
     .matches(/^\d{10}$/, 'Mobile number must be exactly 10 digits and only numeric')
-    .test('is-numeric', 'Mobile number must contain only numbers', value => !isNaN(Number(value)))
+    .test('is-numeric', 'Mobile number must contain only numbers', value => !isNaN(Number(value))),
+  address: Yup.object({
+    city: Yup.string().required('City is required'),
+    areas: Yup.string().required('Area is required'),
+  }).required('Address is required')
 });
-
 
 const AddSalespersonDialog = ({ open, onClose }) => {
   const dispatch = useDispatch();
 
-  const fetchData = async () => {
-    await dispatch(salesman());
-  };
+  const [cities, setCities] = useState([]);
+  const [isAreas, isSetAreas] = useState([]);
+  const [selectedCity, setSelectedCity] = useState('');
+
+  const addressData = useSelector((state) => state.addressReducer.address);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      await dispatch(fetchAddress());
+    };
+    fetchData();
+  }, [dispatch]);
+
+  useEffect(() => {
+    if (addressData.length > 0) {
+      setCities(addressData.map((address) => ({ city: address.city, areas: address.areas })));
+    }
+  }, [addressData]);
+
+  useEffect(() => {
+    if (selectedCity) {
+      const cityDetails = cities.find(city => city.city === selectedCity);
+      if (cityDetails) {
+        isSetAreas(cityDetails.areas);
+      }
+    } else {
+      isSetAreas([]);
+    }
+  }, [selectedCity, cities]);
+
 
   const formik = useFormik({
     initialValues: {
       name: '',
       email: '',
       mobile: '',
+      address: {
+        city: '',
+        areas: ''
+      }
     },
     validationSchema,
     onSubmit: async (values, { resetForm }) => {
-      const success = await dispatch(addSalesman({ ...values, role: 'salesman' }));
+      const success = await dispatch(addSalesman({
+        ...values,
+        address: {
+          ...values.address,
+          city: values.address.city // Pass city name directly
+        },
+        role: 'salesman'
+      }));
       if (success) {
         resetForm(); // Clear the form on success
-        onClose(); // Close dialog if customer was added successfully
-        fetchData();
+        onClose(); // Close dialog if salesman was added successfully
+        dispatch(salesman());
       }
     },
   });
+
+  const handleCityChange = (event) => {
+    const city = event.target.value;
+    setSelectedCity(city);
+    formik.setFieldValue('address.city', city);
+  };
+
+  const handleAreaChange = (event) => {
+    formik.setFieldValue('address.areas', event.target.value);
+  };
 
   return (
     <Dialog open={open} onClose={onClose}>
@@ -91,6 +147,45 @@ const AddSalespersonDialog = ({ open, onClose }) => {
             error={formik.touched.mobile && Boolean(formik.errors.mobile)}
             helperText={formik.touched.mobile && formik.errors.mobile}
           />
+          <FormControl fullWidth required>
+            <InputLabel>City</InputLabel>
+            <Select
+              label="City"
+              name="address.city"
+              value={formik.values.address.city}
+              onChange={handleCityChange}
+              error={formik.touched.address?.city && Boolean(formik.errors.address?.city)}
+            >
+              {cities.map((city, index) => (
+                <MenuItem key={index} value={city.city}>
+                  {city.city}
+                </MenuItem>
+              ))}
+            </Select>
+            {formik.touched.address?.city && formik.errors.address?.city && (
+              <div style={{ color: 'red' }}>{formik.errors.address.city}</div>
+            )}
+          </FormControl>
+          <FormControl fullWidth required>
+            <InputLabel>Area</InputLabel>
+            <Select
+              label="Area"
+              name="address.area"
+              value={formik.values.address.area}
+              onChange={handleAreaChange}
+              error={formik.touched.address?.area && Boolean(formik.errors.address?.area)}
+              disabled={!selectedCity} // Disable if no city is selected
+            >
+              {isAreas.map((area, index) => (
+                <MenuItem key={index} value={area}>
+                  {area}
+                </MenuItem>
+              ))}
+            </Select>
+            {formik.touched.address?.areas && formik.errors.address?.areas && (
+              <div style={{ color: 'red' }}>{formik.errors.address.areas}</div>
+            )}
+          </FormControl>
         </form>
       </DialogContent>
       <DialogActions>

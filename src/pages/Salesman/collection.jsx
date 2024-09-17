@@ -16,6 +16,7 @@ import { collection } from '@/store/action/collection.action';
 import Pagination from '@/components/pagination/pagination';
 import { EyeIcon, PencilSquareIcon, TrashIcon } from '@heroicons/react/24/solid';
 import { formatDate, formatTime } from '@/components/date/DateFormat';
+import { formatIndianCurrency } from '@/utils/formatCurrency';
 
 const PAGE_SIZE = 10;
 
@@ -33,7 +34,6 @@ const Collection = () => {
 
   const collectionData = useSelector((state) => state.collectionReducer.collectionList)
 
-
   useEffect(() => {
     const fetchData = async () => {
       await dispatch(collection());
@@ -46,6 +46,8 @@ const Collection = () => {
 
   const filteredData = sortedData.filter(collect =>
     collect.customerName?.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    collect.customerName?.address?.city.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    collect.customerName?.address?.areas.toLowerCase().includes(searchQuery.toLowerCase()) ||
     collect.amount.toString().toLowerCase().includes(searchQuery.toLowerCase())
   );
 
@@ -154,7 +156,7 @@ const Collection = () => {
             <table className="w-full min-w-[640px] table-auto">
               <thead>
                 <tr>
-                  {["SNo", "Customer Name", "Amount", "Create Date", "Status", "Completion Date", "Action"].map((el) => (
+                  {["SNo", "Customer Name", "City", "Area", "Amount", "Reason", "Status", "Action"].map((el) => (
                     <th
                       key={el}
                       className="border-b border-blue-gray-50 py-3 px-5 text-left"
@@ -172,7 +174,7 @@ const Collection = () => {
               </thead>
               <tbody>
                 {currentData.map((collection, key) => {
-                  const { _id, customerName, amount, customerVerify, date,statusUpdatedAt } = collection;
+                  const { _id, customerName, amount, customerVerify, reason } = collection;
                   const className = `py-3 px-5 ${key === currentData.length - 1
                     ? ""
                     : "border-b border-blue-gray-50"
@@ -191,42 +193,41 @@ const Collection = () => {
                         <Typography
                           className="text-sm font-normal text-blue-gray-500"
                         >
-                          {customerName?.name}
+                          {customerName?.name || "NA"}
                         </Typography>
                       </td>
                       <td className={className}>
                         <Typography className="text-sm font-normal text-blue-gray-500">
-                          {amount}
+                          {customerName?.address?.city || "NA"}
                         </Typography>
                       </td>
                       <td className={className}>
                         <Typography className="text-sm font-normal text-blue-gray-500">
-                          {formatDate(date)}
+                          {customerName?.address?.areas || "NA"}
                         </Typography>
                       </td>
                       <td className={className}>
-                      <Chip
-                        variant="gradient"
-                        color={customerVerify === "Accepted" ? "green" : customerVerify === "Rejected" ? "red" : "gray"}
-                        value={customerVerify === "Accepted" ? "Accepted" : customerVerify === "Rejected" ? "Rejected" : "Pending"}
-                        className="py-0.5 px-2 text-[11px] font-medium w-fit"
-                      />
-                    </td>
-                  
-                     
-                      <td className={className}>
                         <Typography className="text-sm font-normal text-blue-gray-500">
-                          {statusUpdatedAt ? formatDate(statusUpdatedAt) :
-                            <Chip
-                              variant="gradient"
-                              color={"blue"}
-                              value={"In Progress"}
-                              className="py-0.5 px-2 text-[11px] font-medium w-fit"
-                            />
-                          }
+                          {formatIndianCurrency(amount) || "NA"}
                         </Typography>
+                      </td>
+                      <td className={className}>
+                        <Typography className="text-sm font-normal text-blue-gray-500 whitespace-nowrap overflow-hidden text-ellipsis max-w-[150px]">
+
+                          {reason || "NA"}
+                        </Typography>
+                      </td>
+                      <td className={className}>
+                        <Chip
+                          variant="gradient"
+                          color={customerVerify === "Accepted" ? "green" : customerVerify === "Rejected" ? "red" : "gray"}
+                          value={customerVerify === "Accepted" ? "Accepted" : customerVerify === "Rejected" ? "Rejected" : "Pending"}
+                          className="py-0.5 px-2 text-[11px] font-medium w-fit"
+                        />
                       </td>
 
+
+                  
                       <td className={className}>
                         <div className="flex gap-2 flex-wrap">
                           <div
@@ -236,20 +237,24 @@ const Collection = () => {
                             <EyeIcon className="h-5 w-5 text-blue-500 hover:text-blue-700" />
                           </div>
                           {customerVerify === "Pending" &&
+                            <React.Fragment>
+                              <div
+                                className="cursor-pointer"
+                                onClick={() => handleOpenEditDialog(_id)}
+                              >
+                                <PencilSquareIcon className="h-5 w-5 text-yellow-500 hover:text-yellow-700" />
+                              </div>
 
-                            <div
-                              className="cursor-pointer"
-                              onClick={() => handleOpenEditDialog(_id)}
-                            >
-                              <PencilSquareIcon className="h-5 w-5 text-yellow-500 hover:text-yellow-700" />
-                            </div>
+                              <div
+                                className="cursor-pointer"
+                                onClick={() => handleOpenDeleteDialog(_id)}
+                              >
+                                <TrashIcon className="h-5 w-5 text-red-500 hover:text-red-700" />
+                              </div>
+                            </React.Fragment>
+
                           }
-                          <div
-                            className="cursor-pointer"
-                            onClick={() => handleOpenDeleteDialog(_id)}
-                          >
-                            <TrashIcon className="h-5 w-5 text-red-500 hover:text-red-700" />
-                          </div>
+
                         </div>
                       </td>
 

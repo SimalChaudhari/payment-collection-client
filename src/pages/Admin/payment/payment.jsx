@@ -9,6 +9,9 @@ import { paymentHistory } from '@/store/action/payment.action';
 import { useDispatch, useSelector } from 'react-redux';
 import Pagination from '@/components/pagination/pagination';
 import { formatDate, formatTime } from '@/components/date/DateFormat';
+import { formatIndianCurrency } from '@/utils/formatCurrency';
+import { EyeIcon } from '@heroicons/react/24/solid';
+import ViewPaymentsDialog from '@/components/payments/ViewPaymentsDialog';
 
 const PAGE_SIZE = 10;
 
@@ -16,6 +19,10 @@ const Payment = () => {
 
   const [currentPage, setCurrentPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState('');
+  const [viewDialogOpen, setViewDialogOpen] = useState(false);
+
+  const [selectedPaymentId, setSelectedPaymentId] = useState(null);
+
 
   const dispatch = useDispatch()
 
@@ -36,6 +43,8 @@ const Payment = () => {
   const filteredData = sortedData.filter(pay =>
     pay.salesman?.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
     pay.customerName?.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    pay.customerName?.address?.city.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    pay.customerName?.address?.areas.toLowerCase().includes(searchQuery.toLowerCase()) ||
     pay.amount.toString().toLowerCase().includes(searchQuery.toLowerCase())
   );
 
@@ -55,6 +64,18 @@ const Payment = () => {
 
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
+  };
+
+  const handleOpenViewDialog = (id) => {
+    setSelectedPaymentId(id);
+    setViewDialogOpen(true);
+  };
+  const handleCloseViewDialog = () => {
+    setViewDialogOpen(false);
+  };
+
+  const getPaymentById = (id) => {
+    return paymentsData?.find(pay => pay._id === id);
   };
 
   return (
@@ -81,7 +102,7 @@ const Payment = () => {
             <table className="w-full min-w-[640px] table-auto">
               <thead>
                 <tr>
-                  {["SNo", "Salesman Name", "Customer Name", "Amount", "Create Date", "Status", "Completion Date"].map((el) => (
+                  {["SNo", "Salesman Name", "Customer Name", "Amount", "City", "Area", "Reason", "Status", "Actions"].map((el) => (
                     <th
                       key={el}
                       className="border-b border-blue-gray-50 py-3 px-5 text-left"
@@ -99,7 +120,7 @@ const Payment = () => {
               </thead>
               <tbody>
                 {currentData?.map((payment, key) => {
-                  const { _id, salesman, customerName, amount, date, customerVerify, statusUpdatedAt } = payment;
+                  const { _id, salesman, customerName, amount, reason, customerVerify } = payment;
                   const className = `py-3 px-5 ${key === currentData.length - 1
                     ? ""
                     : "border-b border-blue-gray-50"
@@ -128,15 +149,25 @@ const Payment = () => {
                       </td>
                       <td className={className}>
                         <Typography className="text-sm font-normal text-blue-gray-500">
-                          {amount}
+                          {formatIndianCurrency(amount) || "NA"}
                         </Typography>
                       </td>
                       <td className={className}>
                         <Typography className="text-sm font-normal text-blue-gray-500">
-                          {formatDate(date)}
+                          {customerName?.address?.city || "NA"}
+                        </Typography>
+                      </td> <td className={className}>
+                        <Typography className="text-sm font-normal text-blue-gray-500">
+                          {customerName?.address?.areas || "NA"}
                         </Typography>
                       </td>
 
+                      <td className={className}>
+                        <Typography className="text-sm font-normal text-blue-gray-500 whitespace-nowrap overflow-hidden text-ellipsis max-w-[150px]">
+
+                          {reason || "NA"}
+                        </Typography>
+                      </td>
                       <td className={className}>
                         <Chip
                           variant="gradient"
@@ -145,18 +176,16 @@ const Payment = () => {
                           className="py-0.5 px-2 text-[11px] font-medium w-fit"
                         />
                       </td>
-
                       <td className={className}>
-                        <Typography className="text-sm font-normal text-blue-gray-500">
-                          {statusUpdatedAt ? formatDate(statusUpdatedAt) :
-                            <Chip
-                              variant="gradient"
-                              color={"blue"}
-                              value={"In Progress"}
-                              className="py-0.5 px-2 text-[11px] font-medium w-fit"
-                            />
-                          }
-                        </Typography>
+                        <div className="flex gap-2 flex-wrap">
+                          <div
+                            className="cursor-pointer"
+                            onClick={() => handleOpenViewDialog(_id)}
+                          >
+                            <EyeIcon className="h-5 w-5 text-blue-500 hover:text-blue-700" />
+                          </div>
+
+                        </div>
                       </td>
 
                     </tr>
@@ -179,6 +208,12 @@ const Payment = () => {
           </div>
         )}
       </Card>
+      <ViewPaymentsDialog
+        open={viewDialogOpen}
+        onClose={handleCloseViewDialog}
+        payment={getPaymentById(selectedPaymentId)}
+      />
+
     </div>
   );
 };

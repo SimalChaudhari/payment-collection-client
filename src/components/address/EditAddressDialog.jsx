@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Dialog,
   DialogTitle,
@@ -7,13 +7,13 @@ import {
   TextField,
   Button,
   CircularProgress,
-  FormControl,
-  Box
+  Box,
+  FormControl
 } from '@mui/material';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
-import { updateAddress, fetchAddress } from '@/store/action/address.action';
+import { fetchAddress, updateAddress } from '@/store/action/address.action';
 
 // Validation schema using Yup
 const validationSchema = Yup.object({
@@ -21,29 +21,40 @@ const validationSchema = Yup.object({
   areas: Yup.array().of(Yup.string().required('Area is required')).min(1, 'At least one area is required'),
 });
 
+
+
 const EditAddressDialog = ({ open, onClose, addressId }) => {
+
   const dispatch = useDispatch();
-  const address = useSelector((state) => state.addressReducer?.address?.find(addr => addr._id === addressId));
+  const [initialValues, setInitialValues] = useState({
+    city: '',
+    areas: [''],
+  });
+
+
+
+
   useEffect(() => {
     if (addressId) {
-      dispatch(fetchAddress());
+      setInitialValues({ city: addressId.city, areas: addressId.areas });
     }
-  }, [addressId, dispatch]);
+  }, [addressId]);
+
+  const fetchData = async () => {
+    await dispatch(fetchAddress());
+  };
 
   const formik = useFormik({
-    enableReinitialize: true, // Reinitialize form when addressId changes
-    initialValues: {
-      city: address?.city || '',
-      areas: address?.area || [''], // Initialize with existing areas
-    },
+    initialValues,
     validationSchema,
+    enableReinitialize: true, // Enable reinitialization when addressId changes
     onSubmit: async (values, { resetForm }) => {
       try {
-        const success = await dispatch(updateAddress(addressId, values));
-        if (success) {
-          resetForm(); // Clear the form on success
-          onClose(); // Close dialog if Address was updated successfully
-        }
+        await dispatch(updateAddress(addressId._id, values));
+        resetForm(); // Clear the form on success
+        fetchData()
+        onClose(); // Close dialog if Address was updated successfully
+
       } catch (error) {
         console.error('Error submitting form:', error);
       }
@@ -61,7 +72,7 @@ const EditAddressDialog = ({ open, onClose, addressId }) => {
 
   return (
     <Dialog open={open} onClose={onClose}>
-      <DialogTitle>Edit Address</DialogTitle>
+      <DialogTitle>Update Address</DialogTitle>
       <DialogContent>
         <form onSubmit={formik.handleSubmit} className="space-y-4 mt-3">
           <TextField
@@ -77,7 +88,7 @@ const EditAddressDialog = ({ open, onClose, addressId }) => {
           />
 
           {formik.values.areas.map((area, index) => (
-            <FormControl fullWidth key={index} style={{ marginBottom: '16px' }}>
+            <FormControl fullWidth key={index}>
               <Box display="flex" alignItems="center">
                 <TextField
                   label={`Area ${index + 1}`}
@@ -97,7 +108,7 @@ const EditAddressDialog = ({ open, onClose, addressId }) => {
                     color="error"
                     style={{ marginLeft: '16px' }}
                   >
-                    Remove Area
+                    X
                   </Button>
                 )}
               </Box>
@@ -109,7 +120,7 @@ const EditAddressDialog = ({ open, onClose, addressId }) => {
             onClick={handleAddArea}
             color="primary"
             variant="outlined"
-            style={{ display: 'block' }}
+            style={{ display: 'block', marginTop: '16px' }}
           >
             Add More Areas
           </Button>
@@ -130,7 +141,7 @@ const EditAddressDialog = ({ open, onClose, addressId }) => {
           {formik.isSubmitting ? (
             <CircularProgress size={24} style={{ color: '#fff' }} />
           ) : (
-            'Save'
+            'Update'
           )}
         </Button>
       </DialogActions>

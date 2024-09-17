@@ -8,15 +8,15 @@ import {
 } from "@heroicons/react/24/solid";
 import { useDispatch, useSelector } from "react-redux";
 import { totalData } from "@/store/action/home.action";
-import { Helmet } from 'react-helmet-async';
 import { Link } from "react-router-dom"; // Import Link
+import { formatIndianCurrency } from "@/utils/formatCurrency";
 
 // Map dynamic keys to their corresponding icons and titles
 const iconMapping = {
   totalAmount: {
     title: "Total Amount",
     icon: BanknotesIcon,
-    formatValue: (value) => `₹${value}`, // Formatting for amount
+    formatValue: (value) => formatIndianCurrency(value), // Formatting for amount
     link: "/admin/payments" // Add link for Salesmen
 
   },
@@ -45,7 +45,7 @@ export function Home() {
     const fetchData = async () => {
       await dispatch(totalData());
     };
-  
+
     fetchData();
   }, [dispatch]);
 
@@ -62,9 +62,6 @@ export function Home() {
 
   return (
     <React.Fragment>
-      <Helmet>
-        <title>{'Admin Panel '}</title>
-      </Helmet>
 
       <div className="mt-12">
         <div className="mb-12 grid gap-y-10 gap-x-6 md:grid-cols-2 xl:grid-cols-3">

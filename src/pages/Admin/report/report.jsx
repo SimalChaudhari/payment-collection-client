@@ -15,6 +15,7 @@ import Pagination from '@/components/pagination/pagination';
 import { FaDownload } from 'react-icons/fa';
 import * as XLSX from 'xlsx';
 import { formatDate, formatTime } from '@/components/date/DateFormat';
+import { formatIndianCurrency } from '@/utils/formatCurrency';
 
 const PAGE_SIZE = 10;
 
@@ -56,7 +57,11 @@ const Report = () => {
     if (searchQuery) {
       filteredData = filteredData.filter(report =>
         report.customerName?.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        report.salesman?.name.toLowerCase().includes(searchQuery.toLowerCase())
+        report.salesman?.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        report.customerName?.address?.city.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        report.customerName?.address?.areas.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        report.amount.toString().toLowerCase().includes(searchQuery.toLowerCase())
+
       );
     }
 
@@ -222,7 +227,7 @@ const Report = () => {
             <table className="w-full min-w-[640px] table-auto">
               <thead>
                 <tr>
-                  {["SNo", "Salesman Name", "Customer Name", "Amount", "Date","Completion Date"].map((el) => (
+                  {["SNo", "Salesman Name", "Customer Name", "Amount", "City", "Area", "Payment Date", "Accepted Date"].map((el) => (
                     <th
                       key={el}
                       className="border-b border-blue-gray-50 py-3 px-5 text-left"
@@ -240,7 +245,7 @@ const Report = () => {
               </thead>
               <tbody>
                 {currentData.map((payment, key) => {
-                  const { _id, salesman, customerName, amount, date ,statusUpdatedAt} = payment;
+                  const { _id, salesman, customerName, amount, date, statusUpdatedAt } = payment;
                   const className = `py-3 px-5 ${key === currentData.length - 1
                     ? ""
                     : "border-b border-blue-gray-50"
@@ -249,15 +254,15 @@ const Report = () => {
                   return (
                     <tr key={_id}>
                       <td className={className}>
-                         <Typography
-                         className="text-sm font-normal text-blue-gray-500"
+                        <Typography
+                          className="text-sm font-normal text-blue-gray-500"
                         >
                           {(currentPage - 1) * PAGE_SIZE + key + 1}
                         </Typography>
                       </td>
                       <td className={className}>
-                         <Typography
-                         className="text-sm font-normal text-blue-gray-500"
+                        <Typography
+                          className="text-sm font-normal text-blue-gray-500"
                         >
                           {salesman?.name || "NA"}
                         </Typography>
@@ -269,7 +274,17 @@ const Report = () => {
                       </td>
                       <td className={className}>
                         <Typography className="text-sm font-normal text-blue-gray-500">
-                          {amount}
+                          {formatIndianCurrency(amount) || "NA"}
+                        </Typography>
+                      </td>
+                      <td className={className}>
+                        <Typography className="text-sm font-normal text-blue-gray-500">
+                          {customerName?.address?.city || "NA"}
+                        </Typography>
+                      </td>
+                      <td className={className}>
+                        <Typography className="text-sm font-normal text-blue-gray-500">
+                          {customerName?.address?.areas || "NA"}
                         </Typography>
                       </td>
                       <td className={className}>
@@ -278,7 +293,7 @@ const Report = () => {
                         </Typography>
                       </td>
 
-                       <td className={className}>
+                      <td className={className}>
                         <Typography className="text-sm font-normal text-blue-gray-500">
                           {statusUpdatedAt ? formatDate(statusUpdatedAt) :
                             <Chip

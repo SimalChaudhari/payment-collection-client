@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Dialog,
   DialogTitle,
@@ -9,7 +9,7 @@ import {
   Select,
   MenuItem,
   InputLabel,
-  FormControl,CircularProgress
+  FormControl, CircularProgress
 } from '@mui/material';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
@@ -21,18 +21,22 @@ const EditCollectionDialog = ({ open, onClose, collectionData }) => {
   const dispatch = useDispatch();
   const customersData = useSelector((state) => state.customerReducer.customer);
 
+  // States to store the city and area from the selected customer's address
+  const [selectedCustomerCity, setSelectedCustomerCity] = useState('');
+  const [selectedCustomerArea, setSelectedCustomerArea] = useState('');
+
   const validationSchema = Yup.object({
     customerName: Yup.string().required('Customer is required'),
     amount: Yup.number()
-    .required('Amount is required')
-    .positive('Amount must be greater than zero')
-    .min(0.01, 'Amount must be greater than zero')  // Ensures it's greater than zero
-    .typeError('Amount must be a number'),
+      .required('Amount is required')
+      .positive('Amount must be greater than zero')
+      .min(0.01, 'Amount must be greater than zero')  // Ensures it's greater than zero
+      .typeError('Amount must be a number'),
     date: Yup.date()
-    .required('Date is required')
-    .max(new Date(), 'Date cannot be in the future')  // Restricts date to today or earlier
-    .typeError('Invalid date format')
-});
+      .required('Date is required')
+      .max(new Date(), 'Date cannot be in the future')  // Restricts date to today or earlier
+      .typeError('Invalid date format')
+  });
 
   useEffect(() => {
     const fetchData = async () => {
@@ -60,13 +64,32 @@ const EditCollectionDialog = ({ open, onClose, collectionData }) => {
       formik.setValues({
         customerName: collectionData?.customerName?._id || '',
         amount: collectionData?.amount || '',
-        date: collectionData?.date ? new Date(collectionData.date).toISOString().split('T')[0] : '',
+        date: collectionData?.date
+          ? new Date(collectionData.date).toISOString().split('T')[0]
+          : '',
       });
+
+      // Set initial customer city and area based on collectionData
+      if (collectionData?.customerName) {
+        const selectedCustomer = customersData.find(
+          (customer) => customer._id === collectionData.customerName._id
+        );
+        setSelectedCustomerCity(selectedCustomer?.address?.city || '');
+        setSelectedCustomerArea(selectedCustomer?.address?.areas || '');
+      }
     }
-  }, [collectionData]);
+  }, [collectionData, customersData]);
 
   const handleCustomerChange = (event) => {
-    formik.setFieldValue('customerName', event.target.value);
+    const customerId = event.target.value;
+    formik.setFieldValue('customerName', customerId);
+
+    // Find the selected customer and update city and area
+    const selectedCustomer = customersData.find(
+      (customer) => customer._id === customerId
+    );
+    setSelectedCustomerCity(selectedCustomer?.address?.city || '');
+    setSelectedCustomerArea(selectedCustomer?.address?.areas || '');
   };
 
   return (
@@ -93,6 +116,29 @@ const EditCollectionDialog = ({ open, onClose, collectionData }) => {
             <div style={{ color: 'red' }}>{formik.errors.customerName}</div>
           )}
         </FormControl>
+
+        {/* Display city and area (read-only) */}
+        <TextField
+          label="City"
+          name="city"
+          value={selectedCustomerCity}
+          fullWidth
+          InputProps={{
+            readOnly: true,  // City field is read-only
+          }}
+          margin="normal"
+        />
+        <TextField
+          label="Area"
+          name="areas"
+          value={selectedCustomerArea}
+          fullWidth
+          InputProps={{
+            readOnly: true,  // Area field is read-only
+          }}
+          margin="normal"
+        />
+
         <TextField
           label="Amount"
           name="amount"
@@ -121,18 +167,18 @@ const EditCollectionDialog = ({ open, onClose, collectionData }) => {
         />
       </DialogContent>
       <DialogActions>
-      <Button onClick={onClose} color="secondary" variant="outlined">
+        <Button onClick={onClose} color="secondary" variant="outlined">
           Cancel
         </Button>
-        
+
         <Button onClick={formik.handleSubmit} color="primary" variant="contained">
-        {formik.isSubmitting ? (
+          {formik.isSubmitting ? (
             <CircularProgress size={24} style={{ color: '#fff' }} />
           ) : (
             'Update'
           )}
         </Button>
-       
+
       </DialogActions>
     </Dialog>
   );

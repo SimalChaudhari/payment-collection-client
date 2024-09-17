@@ -5,13 +5,15 @@ import {
     CardBody,
     Typography,
     Button,
-    Tooltip
+    Dialog,
+    DialogHeader,
+    DialogBody,
+    DialogFooter
 } from "@material-tailwind/react";
 import AddAddressDialog from '@/components/address/AddAddressDialog';
 import EditAddressDialog from '@/components/address/EditAddressDialog';
 import ViewAddressDialog from '@/components/address/ViewAddressDialog';
 import DeleteAddressDialog from '@/components/address/DeleteAddressDialog';
-
 import { useDispatch, useSelector } from 'react-redux';
 import Pagination from '@/components/pagination/pagination';
 import { EyeIcon, PencilSquareIcon, TrashIcon } from '@heroicons/react/24/solid';
@@ -27,6 +29,7 @@ const ViewAddress = () => {
     const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
     const [selectedAddressId, setSelectedAddressId] = useState(null);
     const [searchQuery, setSearchQuery] = useState('');
+    const [areasDialogOpen, setAreasDialogOpen] = useState(false);
 
     const dispatch = useDispatch();
     const addressData = useSelector((state) => state.addressReducer.address || []);
@@ -99,6 +102,15 @@ const ViewAddress = () => {
         return addressData.find(address => address._id === id);
     };
 
+    const handleOpenAreasDialog = (id) => {
+        setSelectedAddressId(id);
+        setAreasDialogOpen(true);
+    };
+
+    const handleCloseAreasDialog = () => {
+        setAreasDialogOpen(false);
+    };
+
     return (
         <div className="mt-12 mb-8 flex flex-col gap-12">
             <Card>
@@ -159,8 +171,8 @@ const ViewAddress = () => {
                                     return (
                                         <tr
                                             key={_id}
-                                            className={`cursor-pointer ${selectedAddressId === _id ? 'bg-gray-100' : ''}`}
-                                            onClick={() => setSelectedAddressId(selectedAddressId === _id ? null : _id)}
+                                            className="cursor-pointer"
+                                            onClick={() => handleOpenAreasDialog(_id)}
                                         >
                                             <td className={className}>
                                                 <Typography
@@ -175,39 +187,27 @@ const ViewAddress = () => {
                                                 </Typography>
                                             </td>
                                             <td className={className}>
-                                                {selectedAddressId === _id ? (
-                                                    <Typography className="text-sm font-normal text-blue-gray-500">
-                                                        {areas.join(', ')}
-                                                    </Typography>
-                                                ) : (
-                                                    <Tooltip
-                                                        content={areas.join('\n')}
-                                                        placement="top"
-                                                        className="cursor-pointer"
-                                                    >
-                                                        <Typography className="text-sm font-normal text-blue-gray-500">
-                                                            {`${areas.length} Areas`}
-                                                        </Typography>
-                                                    </Tooltip>
-                                                )}
+                                                <Typography className="text-sm font-normal text-blue-gray-500">
+                                                    {areas.length === 0 ? "No Areas Available" : `${areas.length} Areas`}
+                                                </Typography>
                                             </td>
                                             <td className={className}>
                                                 <div className="flex gap-2 flex-wrap">
                                                     <div
                                                         className="cursor-pointer"
-                                                        onClick={() => handleOpenViewDialog(_id)}
+                                                        onClick={(e) => { e.stopPropagation(); handleOpenViewDialog(_id); }}
                                                     >
                                                         <EyeIcon className="h-5 w-5 text-blue-500 hover:text-blue-700" />
                                                     </div>
                                                     <div
                                                         className="cursor-pointer"
-                                                        onClick={() => handleOpenEditDialog(_id)}
+                                                        onClick={(e) => { e.stopPropagation(); handleOpenEditDialog(_id); }}
                                                     >
                                                         <PencilSquareIcon className="h-5 w-5 text-yellow-500 hover:text-yellow-700" />
                                                     </div>
                                                     <div
                                                         className="cursor-pointer"
-                                                        onClick={() => handleOpenDeleteDialog(_id)}
+                                                        onClick={(e) => { e.stopPropagation(); handleOpenDeleteDialog(_id); }}
                                                     >
                                                         <TrashIcon className="h-5 w-5 text-red-500 hover:text-red-700" />
                                                     </div>
@@ -254,6 +254,39 @@ const ViewAddress = () => {
                 onClose={handleCloseDeleteDialog}
                 onDeleteAddress={selectedAddressId}
             />
+
+            {/* Areas Popover */}
+            <Dialog
+                open={areasDialogOpen}
+                handler={handleCloseAreasDialog}
+                size="sm"
+                className="rounded-lg p-4"
+            >
+                <DialogHeader>
+                    <Typography variant="h6" color="gray">
+                        Areas in {getAddressById(selectedAddressId)?.city}
+                    </Typography>
+                </DialogHeader>
+                <DialogBody divider>
+                    {getAddressById(selectedAddressId)?.areas.length > 0 ? (
+                        <ul className="list-disc pl-4">
+                            {getAddressById(selectedAddressId)?.areas.map((area, index) => (
+                                <li key={index}>{area}</li>
+                            ))}
+                        </ul>
+                    ) : (
+                        <Typography variant="small" color="gray">
+                            No area included
+                        </Typography>
+                    )}
+                </DialogBody>
+                <DialogFooter>
+                    <Button variant="text" color="blue-gray" onClick={handleCloseAreasDialog}>
+                        Close
+                    </Button>
+                </DialogFooter>
+            </Dialog>
+
         </div>
     );
 };

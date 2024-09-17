@@ -35,11 +35,11 @@ export function SignIn() {
     if (result.success) {
       const { role } = result.user; // Ensure `role` is present
       if (role === 'admin') {
-        navigate('/admin/home');
+        navigate('/admin/dashboard');
       } else if (role === 'salesman') {
-        navigate('/salesman/home');
+        navigate('/salesman/dashboard');
       } else if (role === 'customer') {
-        navigate('/customer/home');
+        navigate('/customer/dashboard');
       } else {
         toast.error("No User Available");
       }

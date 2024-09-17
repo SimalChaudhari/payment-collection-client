@@ -37,6 +37,8 @@ const AddCollectionDialog = ({ open, onClose }) => {
   const dispatch = useDispatch();
   const customersData = useSelector((state) => state.customerReducer.customer);
   const [selectedCustomerName, setSelectedCustomerName] = useState('');
+  const [selectedCustomerCity, setSelectedCustomerCity] = useState('');  // State for city
+  const [selectedCustomerArea, setSelectedCustomerArea] = useState('');  // State for area
 
   useEffect(() => {
     const fetchCustomer = async () => {
@@ -63,7 +65,9 @@ const AddCollectionDialog = ({ open, onClose }) => {
         resetForm(); // Clear the form on success
         onClose(); // Close dialog if collection was added successfully
         fetchData();
-        setSelectedCustomerName('')
+        setSelectedCustomerName('');
+        setSelectedCustomerCity(''); // Clear the city
+        setSelectedCustomerArea(''); // Clear the area
       }
     },
   });
@@ -73,8 +77,13 @@ const AddCollectionDialog = ({ open, onClose }) => {
   }, [selectedCustomerName]);
 
   const handleCustomerChange = (event) => {
-    const customerName = event.target.value;
-    setSelectedCustomerName(customerName);
+    const customerId = event.target.value;
+    const selectedCustomer = customersData.find(customer => customer._id === customerId);
+
+    setSelectedCustomerName(customerId);
+    // Set city and area from selected customer
+    setSelectedCustomerCity(selectedCustomer?.address?.city || '');
+    setSelectedCustomerArea(selectedCustomer?.address?.areas || '');
   };
 
   return (
@@ -101,6 +110,27 @@ const AddCollectionDialog = ({ open, onClose }) => {
               <div style={{ color: 'red' }}>{formik.errors.customerName}</div>
             )}
           </FormControl>
+
+          {/* Display the customer's city and area in read-only fields */}
+          <TextField
+            label="City"
+            name="customerCity"
+            value={selectedCustomerCity}
+            fullWidth
+            InputProps={{
+              readOnly: true,  // Make the city field read-only
+            }}
+          />
+
+          <TextField
+            label="Area"
+            name="customerArea"
+            value={selectedCustomerArea}
+            fullWidth
+            InputProps={{
+              readOnly: true,  // Make the area field read-only
+            }}
+          />
           <TextField
             label="Amount"
             name="amount"

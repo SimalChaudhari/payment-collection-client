@@ -13,7 +13,7 @@ import {
 import { useDispatch } from 'react-redux';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
-import { addAddress } from '@/store/action/address.action';
+import { addAddress, fetchAddress } from '@/store/action/address.action';
 
 // Validation schema using Yup
 const validationSchema = Yup.object({
@@ -23,6 +23,11 @@ const validationSchema = Yup.object({
 
 const AddAddressDialog = ({ open, onClose }) => {
     const dispatch = useDispatch();
+
+    const fetchData = async () => {
+        await dispatch(fetchAddress());
+      };
+    
 
     const formik = useFormik({
         initialValues: {
@@ -36,6 +41,7 @@ const AddAddressDialog = ({ open, onClose }) => {
                 if (success) {
                     resetForm(); // Clear the form on success
                     onClose(); // Close dialog if Address was added successfully
+                    fetchData();
                 }
             } catch (error) {
                 console.error('Error submitting form:', error);
@@ -70,7 +76,7 @@ const AddAddressDialog = ({ open, onClose }) => {
                     />
 
                     {formik.values.areas.map((area, index) => (
-                        <FormControl fullWidth key={index} style={{ marginBottom: '16px' }}>
+                        <FormControl fullWidth key={index}>
                             <Box display="flex" alignItems="center">
                                 <TextField
                                     label={`Area ${index + 1}`}

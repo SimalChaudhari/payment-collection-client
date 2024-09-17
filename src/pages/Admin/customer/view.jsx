@@ -14,6 +14,7 @@ import { customer } from '@/store/action/customer.action';
 import { useDispatch, useSelector } from 'react-redux';
 import Pagination from '@/components/pagination/pagination';
 import { EyeIcon, PencilSquareIcon, TrashIcon } from '@heroicons/react/24/solid';
+import { addCountryCode } from '@/utils/addCountryCode';
 
 const PAGE_SIZE = 10;
 
@@ -44,7 +45,9 @@ const View = () => {
   const filteredData = sortedData.filter(customer =>
     customer.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
     customer.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    customer.mobile.toLowerCase().includes(searchQuery.toLowerCase())
+    customer.mobile.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    customer.address?.city.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    customer.address?.areas.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   // Update page number and current data when search query changes
@@ -120,7 +123,7 @@ const View = () => {
             <table className="w-full min-w-[640px] table-auto">
               <thead>
                 <tr>
-                  {["SNo", "Name", "Email", "Mobile", "Actions"].map((el) => (
+                  {["SNo", "Name", "Email", "Mobile", "City", "Area", "Actions"].map((el) => (
                     <th
                       key={el}
                       className="border-b border-blue-gray-50 py-3 px-5 text-left"
@@ -138,7 +141,7 @@ const View = () => {
               </thead>
               <tbody>
                 {currentData.map((customer, key) => {
-                  const { _id, name, email, mobile } = customer;
+                  const { _id, name, email, mobile, address } = customer;
                   const className = `py-3 px-5 ${key === currentData.length - 1
                     ? ""
                     : "border-b border-blue-gray-50"
@@ -155,17 +158,26 @@ const View = () => {
                       <td className={className}>
                         <Typography
                           className="text-sm font-normal text-blue-gray-500">
-                          {name}
+                          {name || "NA"}
                         </Typography>
                       </td>
                       <td className={className}>
                         <Typography className="text-sm font-normal text-blue-gray-500">
-                          {email}
+                          {email || "NA"}
                         </Typography>
                       </td>
                       <td className={className}>
                         <Typography className="text-sm font-normal text-blue-gray-500">
-                          {mobile}
+                          {addCountryCode(mobile) || "NA"}
+                        </Typography>
+                      </td>
+                      <td className={className}>
+                        <Typography className="text-sm font-normal text-blue-gray-500">
+                          {address?.city || "NA"}
+                        </Typography>
+                      </td> <td className={className}>
+                        <Typography className="text-sm font-normal text-blue-gray-500">
+                          {address?.areas || "NA"}
                         </Typography>
                       </td>
                       <td className={className}>

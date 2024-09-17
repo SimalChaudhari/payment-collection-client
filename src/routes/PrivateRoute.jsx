@@ -8,9 +8,9 @@ const PrivateRoute = ({ element: Element, allowedRoles, ...rest }) => {
 
   // Define role-based routes
   const roleBasedRedirects = {
-    admin: '/admin/home',
-    salesman: '/salesman/home',
-    customer: '/customer/home'
+    admin: '/admin/dashboard',
+    salesman: '/salesman/dashboard',
+    customer: '/customer/dashboard'
     
   };
 
