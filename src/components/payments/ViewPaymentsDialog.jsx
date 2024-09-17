@@ -2,6 +2,7 @@ import React from 'react';
 import { Dialog, DialogTitle, DialogContent, DialogActions, Button, Typography, Box, Divider } from '@mui/material';
 import { formatDate } from '../date/DateFormat';
 import { Chip } from '@material-tailwind/react';
+import { formatIndianCurrency } from '@/utils/formatCurrency';
 
 const ViewPaymentsDialog = ({ open, onClose, payment }) => {
 
@@ -22,7 +23,7 @@ const ViewPaymentsDialog = ({ open, onClose, payment }) => {
                     <Typography variant="body1"><strong>Area:</strong> {payment?.customerName?.address?.areas || 'N/A'}</Typography>
                 </Box>
                 <Box sx={{ mb: 2 }}>
-                    <Typography variant="body1"><strong>Amount:</strong> {payment?.amount || 'N/A'}</Typography>
+                    <Typography variant="body1"><strong>Amount:</strong> {formatIndianCurrency(payment?.amount) || 'N/A'}</Typography>
                 </Box>
                 <Box sx={{ mb: 2 }}>
                     <Typography variant="body1"><strong>Payment Date:</strong> {formatDate(payment?.date) || 'N/A'}</Typography>

@@ -1,11 +1,11 @@
 // routes.js
 import {
   HomeIcon,
-  UserCircleIcon,
+  UserPlusIcon,
   TableCellsIcon,
   InformationCircleIcon,
-  CreditCardIcon,
-  UserIcon, CogIcon
+  CreditCardIcon,ArchiveBoxIcon,
+  UsersIcon, CogIcon, UserCircleIcon, CircleStackIcon,
 } from "@heroicons/react/24/solid";
 
 
@@ -33,12 +33,12 @@ export const adminRoutes = [
     layout: "admin",
     pages: [
       { icon: <HomeIcon {...icon} />, name: "Dashboard", path: "/dashboard", element: <Home /> },
-      { icon: <UserIcon {...icon} />, name: "Customers", path: "/customers", element: <View /> },
-      { icon: <UserCircleIcon {...icon} />, name: "Salesmans", path: "/salesmans", element: <ViewSalesman /> },
+      { icon: <UserPlusIcon {...icon} />, name: "Salesmans", path: "/salesmans", element: <ViewSalesman /> },
+      { icon: <UsersIcon {...icon} />, name: "Customers", path: "/customers", element: <View /> },
       { icon: <CreditCardIcon {...icon} />, name: "Payments", path: "/payments", element: <Payment /> },
       { icon: <InformationCircleIcon {...icon} />, name: "Reports", path: "/reports", element: <ReportData /> },
       { icon: <UserCircleIcon {...icon} />, name: "Profile", path: "/profile", element: <AdminProfile /> },
-      { icon: <CogIcon {...icon} />, name: "Setting", path: "/setting", element: <ViewAddress /> },
+      { icon: <ArchiveBoxIcon {...icon} />, name: "Address", path: "/address", element: <ViewAddress /> },
 
       // { path: "*", element: <NotFound /> }, // 404 Page
     ],
@@ -50,7 +50,7 @@ export const salesmanRoutes = [
     layout: "salesman",
     pages: [
       { icon: <HomeIcon {...icon} />, name: "Dashboard", path: "/dashboard", element: <HomeSalesman /> },
-      { icon: <UserIcon {...icon} />, name: "Collections", path: "/collections", element: <Collection /> },
+      { icon: <CircleStackIcon {...icon} />, name: "Collections", path: "/collections", element: <Collection /> },
       { icon: <UserCircleIcon {...icon} />, name: "Profile", path: "/profile", element: <AdminProfile /> },
       // { path: "*", element: <NotFound /> }, // 404 Page
     ],

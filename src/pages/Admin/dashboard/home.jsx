@@ -28,7 +28,7 @@ const iconMapping = {
 
   },
   salesmanCount: {
-    title: "Salesmen",
+    title: "Salesmens",
     icon: UserPlusIcon,
     formatValue: (value) => value.toString(), // Convert to string
     link: "/admin/salesmans" // Add link for Salesmen

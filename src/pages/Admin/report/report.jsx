@@ -14,7 +14,7 @@ import 'react-datepicker/dist/react-datepicker.css';
 import Pagination from '@/components/pagination/pagination';
 import { FaDownload } from 'react-icons/fa';
 import * as XLSX from 'xlsx';
-import { formatDate, formatTime } from '@/components/date/DateFormat';
+import { formatDate } from '@/components/date/DateFormat';
 import { formatIndianCurrency } from '@/utils/formatCurrency';
 
 const PAGE_SIZE = 10;
@@ -98,8 +98,12 @@ const Report = () => {
       "SNo": index + 1,
       "Salesman Name": report.salesman?.name || "NA",
       "Customer Name": report.customerName?.name || "NA",
-      "Amount": report.amount,
-      "Date": formatDateTime(report.date)
+      "Customer City": report.customerName?.address?.city || "NA",
+      "Customer Area": report.customerName?.address?.areas || "NA",
+      "Amount": formatIndianCurrency(report.amount) || "NA",
+      "Date": formatDate(report.date) || "NA",
+      "Accepted Date": formatDate(report.statusUpdatedAt) || "NA",
+
     })));
 
     const workbook = XLSX.utils.book_new();
