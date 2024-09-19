@@ -36,6 +36,13 @@ export function Sidenav({ brandImg, routes }) {
     transparent: "bg-transparent",
   };
 
+    // Filter out routes with path "*"
+    const filteredRoutes = routes.map(route => ({
+      ...route,
+      pages: route.pages.filter(page => page.path !== "*")
+    }));
+  
+
   return (
     <aside
       className={`${sidenavTypes[sidenavType]} ${
@@ -63,7 +70,7 @@ export function Sidenav({ brandImg, routes }) {
         </IconButton>
       </div>
       <div className="m-4">
-        {routes.map(({ layout, title, pages }, key) => (
+        {filteredRoutes.map(({ layout, title, pages }, key) => (
           <ul key={key} className="mb-4 flex flex-col gap-1">
             {title && (
               <li className="mx-3.5 mt-4 mb-2">
