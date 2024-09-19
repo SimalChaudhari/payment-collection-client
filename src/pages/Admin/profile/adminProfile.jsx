@@ -56,7 +56,7 @@ export function AdminProfile() {
         onSubmit: async (values, { resetForm }) => {
             const success = await dispatch(
                 resetPassword({
-                    email: emailData,
+                    mobile: emailData,
                     currentPassword: values.currentPassword,
                     newPassword: values.newPassword,
                 })
