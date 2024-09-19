@@ -52,9 +52,10 @@ const EditCollectionDialog = ({ open, onClose, collectionData }) => {
       date: collectionData?.date ? new Date(collectionData.date).toISOString().split('T')[0] : '',
     },
     validationSchema,
-    onSubmit: async (values) => {
+    onSubmit: async (values, { resetForm }) => {
       await dispatch(editCollection(collectionData._id, values));
       onClose();
+      resetForm()
       await dispatch(collection()); // Fetch updated data
     },
   });

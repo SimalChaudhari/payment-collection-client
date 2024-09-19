@@ -13,10 +13,9 @@ import { toast } from "react-toastify";
 
 // Validation schema with Yup
 const validationSchema = Yup.object({
-  email: Yup.string()
-    .email('Invalid email format')
-    .matches(/^[^\s@]+@[^\s@]+\.(com)$/, 'Email must end with .com')
-    .required('Email is required'),
+  mobile: Yup.string()
+    .matches(/^\d{10}$/, 'Mobile number must be 10 digits')
+    .required('Mobile number is required'),
   password: Yup.string().required('Password Required'),
 });
 
@@ -27,9 +26,9 @@ export function SignIn() {
 
 
   const handleLogin = async (values) => {
-    const { email, password } = values;
+    const { mobile, password } = values;
     setLoader(true)
-    const result = await dispatch(login(email, password));
+    const result = await dispatch(login(mobile, password));
     setLoader(false)
 
     if (result.success) {
@@ -55,7 +54,7 @@ export function SignIn() {
           <Typography variant="h2" className="font-bold mb-4">Sign In</Typography>
         </div>
         <Formik
-          initialValues={{ email: '', password: '' }}
+          initialValues={{ mobile: '', password: '' }}
           validationSchema={validationSchema}
           onSubmit={handleLogin}
         >
@@ -63,16 +62,16 @@ export function SignIn() {
             <Form className="mt-8">
               <div className="mb-4 flex flex-col gap-4">
                 <div className="flex flex-col gap-2">
-                  <Typography variant="small" color="blue-gray" className="font-medium">Email</Typography>
+                  <Typography variant="small" color="blue-gray" className="font-medium">Mobile</Typography>
                   <Field
-                    name="email"
+                    name="mobile"
                     as={Input}
                     size="lg"
                     placeholder="name@mail.com"
-                    type="email"
+                    type="mobile"
                     className="!border-t-blue-gray-200 focus:!border-t-gray-900"
                   />
-                  <ErrorMessage name="email" component="div" className="text-red-500" />
+                  <ErrorMessage name="mobile" component="div" className="text-red-500" />
                 </div>
                 <div className="flex flex-col gap-2">
                   <Typography variant="small" color="blue-gray" className="font-medium">Password</Typography>

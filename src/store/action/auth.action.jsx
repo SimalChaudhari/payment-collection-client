@@ -17,13 +17,13 @@ export const register = (userData) => {
 };
 
 
-export const login = (email, password) => {
+export const login = (mobile, password) => {
   return async (dispatch) => {
     try {
       // Make an actual API request to your backend
-      const response = await axiosInstance.post('/auth/login', { email, password });
+      const response = await axiosInstance.post('/auth/login', { mobile, password });
       const { user, token } = response.data;
-      localStorage.setItem('userData', JSON.stringify({user:user}));
+      localStorage.setItem('userData', JSON.stringify({ user: user }));
       localStorage.setItem('token', token);
       dispatch({
         type: 'LOGIN',
@@ -38,7 +38,7 @@ export const login = (email, password) => {
 };
 
 
-  
+
 export const logout = () => {
   return async (dispatch) => {
     try {
@@ -59,57 +59,80 @@ export const logout = () => {
 };
 
 export const resetPassword = (data) => {
-    return async (dispatch) => {
-      try {
-        const token = localStorage.getItem('token');
-        await axiosInstance.post(`/auth/reset-password`,data,{
-           headers: {
-             Authorization: `Bearer ${token}`,
-           },
-         })
-         return true
-      } catch (error) {
-        toast.error(error.response.data.message || "Something went wrong")
-        return false;
-      }
-    };
+  return async (dispatch) => {
+    try {
+      const token = localStorage.getItem('token');
+      await axiosInstance.post(`/auth/reset-password`, data, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      return true
+    } catch (error) {
+      toast.error(error.response.data.message || "Something went wrong")
+      return false;
+    }
   };
+};
 
 
-  export const forgotPasswordAPI = (data) => {
+export const forgotPasswordAPI = (data) => {
 
-    return async (dispatch) => {
-      try {
-        const token = localStorage.getItem('token');
-        await axiosInstance.post(`/auth/forget-password`,data,{
-           headers: {
-             Authorization: `Bearer ${token}`,
-           },
-         })
-         return true
-      } catch (error) {
-        console.log("🚀 ~ return ~ error:", error.response)
-        toast.error(error.response.data.message)
-        return false;
-      }
-    };
+  return async (dispatch) => {
+    try {
+      const token = localStorage.getItem('token');
+      await axiosInstance.post(`/auth/forget-password`, data, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      return true
+    } catch (error) {
+      toast.error(error.response.data.message)
+      return false;
+    }
   };
+};
 
-  export const changePasswordAPI = (data) => {
 
-    return async (dispatch) => {
-      try {
-        const token = localStorage.getItem('token');
-        await axiosInstance.post(`/auth/new-password`,data,{
-           headers: {
-             Authorization: `Bearer ${token}`,
-           },
-         })
-         return true
-      } catch (error) {
-        toast.error(error.response.data.message)
-        return false;
-      }
-    };
+
+export const VerifyOtp = (data) => {
+  return async (dispatch) => {
+    try {
+      const res = await axiosInstance.post(
+        `/auth/otp-verify`, // Correct method (POST) to verify OTP
+        data                // Data object sent to the server
+      );
+      dispatch({
+        type: 'OTP',
+        payload: res?.data?.otp
+      });
+
+      return true;
+    } catch (error) {
+      toast.error(error.response?.data?.message || 'OTP verification failed');
+      return false;
+    }
   };
+};
+
+
+
+export const changePasswordAPI = (data) => {
+
+  return async (dispatch) => {
+    try {
+      const token = localStorage.getItem('token');
+      await axiosInstance.post(`/auth/new-password`, data, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      return true
+    } catch (error) {
+      toast.error(error.response.data.message)
+      return false;
+    }
+  };
+};
 

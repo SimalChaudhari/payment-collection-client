@@ -5,7 +5,7 @@ import { Formik, Field, Form, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import { toast } from 'react-toastify';
 import { changePasswordAPI } from '@/store/action/auth.action';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 // Validation schema with Yup
 const validationSchema = Yup.object({
@@ -21,18 +21,12 @@ export function ResetPassword() {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
-
-  const location = useLocation();
-  // Parse query parameters
-  const queryParams = new URLSearchParams(location.search);
-  const token = queryParams.get('token');
-
+  const otpVerify = useSelector((state) => state.authReducer.otp);
 
   const handleSubmit = async (values, { resetForm }) => {
-
     const { newPassword } = values;
     setLoading(true);
-    const success = await dispatch(changePasswordAPI({ token: token, newPassword: newPassword }));
+    const success = await dispatch(changePasswordAPI({ otp: otpVerify, newPassword: newPassword }));
     if (success) {
       toast.success('Password reset Successfully!');
       resetForm(); // Reset form fields after successful submission

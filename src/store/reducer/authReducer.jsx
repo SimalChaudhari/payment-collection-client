@@ -2,28 +2,34 @@
 const initialState = {
   isAuthenticated: !!localStorage.getItem("token"),
   user: JSON.parse(localStorage.getItem("userData")) || null,
+  otp: ""
+
 };
-  
-  function authReducer(state = initialState, action) {
-    const { type } = action;
-  
-    switch (type) {
-      case "LOGIN":
+
+function authReducer(state = initialState, action) {
+  const { type } = action;
+
+  switch (type) {
+    case "LOGIN":
       return {
         ...state,
         isAuthenticated: true,
         user: action.payload,
       };
-      case "LOGOUT":
+    case "OTP":
+      return {
+        ...state,
+        otp: action.payload,
+      };
+    case "LOGOUT":
       return {
         isAuthenticated: false,
         user: null,
       };
 
-  
-      default:
-        return state;
-    }
+
+    default:
+      return state;
   }
-  export default authReducer;
-  
+}
+export default authReducer;

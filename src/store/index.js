@@ -10,6 +10,7 @@ import homeReducer from './reducer/homeReducer';
 import reportReducer from './reducer/reportReducer';
 import notificationReducer from './reducer/notificationReducer';
 import addressReducer from './reducer/addressReducer';
+import whatsappReducer from './reducer/whatsappReducer';
 
 
 const rootReducer = combineReducers({
@@ -21,7 +22,8 @@ const rootReducer = combineReducers({
     reportReducer,
     collectionReducer,
     notificationReducer,
-    addressReducer
+    addressReducer,
+    whatsappReducer
 })
 
 const middleware = [thunk];

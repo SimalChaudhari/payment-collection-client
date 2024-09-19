@@ -11,7 +11,7 @@ const validationSchema = Yup.object({
   email: Yup.string()
     .email('Invalid email format')
     .matches(/^[^\s@]+@[^\s@]+\.(com)$/, 'Email must end with .com')
-    .required('Email is required'),
+  ,
   mobile: Yup.string()
     .required('Mobile number is required')
     .matches(/^\d{10}$/, 'Mobile number must be exactly 10 digits and only numeric')
@@ -69,7 +69,7 @@ const EditSalespersonDialog = ({ open, onClose, salesmanData }) => {
     },
     validationSchema,
     enableReinitialize: true,
-    onSubmit: async (values) => {
+    onSubmit: async (values, { resetForm }) => {
       await dispatch(editSalesman(salesmanData._id, {
         ...values,
         address: {
@@ -78,6 +78,7 @@ const EditSalespersonDialog = ({ open, onClose, salesmanData }) => {
         }
       }));
       onClose();
+      resetForm()
       dispatch(salesman());
     },
   });

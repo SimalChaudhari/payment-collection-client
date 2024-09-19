@@ -2,7 +2,8 @@
 const initialState = {
     total: [], // Array to hold user data
     salesmanTotal: [], // Array to hold user data
-    verifyCustomer:[]
+    verifyCustomer:[],
+    setting:[]
 
 
   
@@ -29,6 +30,11 @@ const initialState = {
         verifyCustomer :action.payload,
       };
 
+      case 'WHATSAPP':
+      return {
+        ...state,
+        setting :action.payload,
+      };
 
       default:
         return state;

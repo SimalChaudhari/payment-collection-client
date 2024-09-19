@@ -24,7 +24,7 @@ const validationSchema = Yup.object({
   email: Yup.string()
     .email('Invalid email format')
     .matches(/^[^\s@]+@[^\s@]+\.(com)$/, 'Email must end with .com')
-    .required('Email is required'),
+  ,
   mobile: Yup.string()
     .required('Mobile number is required')
     .matches(/^\d{10}$/, 'Mobile number must be exactly 10 digits and only numeric')
@@ -80,7 +80,7 @@ const EditCustomerDialog = ({ open, onClose, customerData }) => {
     },
     validationSchema,
     enableReinitialize: true, // Reinitialize form values when customerData changes
-    onSubmit: async (values) => {
+    onSubmit: async (values, { resetForm }) => {
       await dispatch(editCustomer(customerData._id, {
         ...values,
         address: {
@@ -89,6 +89,7 @@ const EditCustomerDialog = ({ open, onClose, customerData }) => {
         }
       }));
       onClose();
+      resetForm()
       dispatch(customer()); // Refresh the customer list after editing
     }
   });
@@ -133,7 +134,7 @@ const EditCustomerDialog = ({ open, onClose, customerData }) => {
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
             fullWidth
-            required
+
             error={formik.touched.email && Boolean(formik.errors.email)}
             helperText={formik.touched.email && formik.errors.email}
           />
@@ -144,7 +145,7 @@ const EditCustomerDialog = ({ open, onClose, customerData }) => {
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
             fullWidth
-            required
+
             error={formik.touched.mobile && Boolean(formik.errors.mobile)}
             helperText={formik.touched.mobile && formik.errors.mobile}
           />

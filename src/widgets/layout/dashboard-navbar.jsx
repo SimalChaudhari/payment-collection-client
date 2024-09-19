@@ -29,13 +29,17 @@ import { useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { logout } from "@/store/action/auth.action";
 import { notification, notificationUpdate } from "@/store/action/notification.action";
+import { BreadcrumbsTitle } from "@/components/breadcrumbsTitle/Breadcrumbs";
 
 export function DashboardNavbar() {
   const [controller, dispatch] = useMaterialTailwindController();
   const { fixedNavbar, openSidenav } = controller;
-  const { pathname } = useLocation();
-  const [layout, page] = pathname.split("/").filter((el) => el !== "");
+
   const sidenavRef = useRef(null);
+  const location = useLocation();
+  const page = BreadcrumbsTitle(location.pathname);
+
+
 
   const userEmail = useSelector((state) => state.authReducer.user.user.email);
   const UserData = useSelector((state) => state.authReducer.user.user.role);
@@ -116,9 +120,7 @@ export function DashboardNavbar() {
     }
   };
 
-
-
-
+  
 
   return (
     <Navbar

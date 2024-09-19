@@ -4,7 +4,7 @@ import {
   UserPlusIcon,
   TableCellsIcon,
   InformationCircleIcon,
-  CreditCardIcon,ArchiveBoxIcon,
+  CreditCardIcon, ArchiveBoxIcon,
   UsersIcon, CogIcon, UserCircleIcon, CircleStackIcon,
 } from "@heroicons/react/24/solid";
 
@@ -22,6 +22,7 @@ import CustomerDashboard from "@/pages/Customer/Dashboard/customerDashboard";
 import PaymentVerify from "@/pages/Customer/PaymentVerify/paymentVerify";
 import ReportData from "@/pages/Admin/report/report";
 import ViewAddress from "./pages/Address/addressView";
+import { Navigate } from "react-router-dom";
 // import NotFound from "@/pages/NotFound"; // 404 Page
 
 const icon = {
@@ -37,8 +38,11 @@ export const adminRoutes = [
       { icon: <UsersIcon {...icon} />, name: "Customers", path: "/customers", element: <View /> },
       { icon: <CreditCardIcon {...icon} />, name: "Payments", path: "/payments", element: <Payment /> },
       { icon: <InformationCircleIcon {...icon} />, name: "Reports", path: "/reports", element: <ReportData /> },
-      { icon: <UserCircleIcon {...icon} />, name: "Profile", path: "/profile", element: <AdminProfile /> },
       { icon: <ArchiveBoxIcon {...icon} />, name: "Address", path: "/address", element: <ViewAddress /> },
+      { icon: <UserCircleIcon {...icon} />, name: "Setting", path: "/setting", element: <AdminProfile /> },
+
+      { path: "*", element: <Navigate to="/dashboard" /> }, // Redirect to dashboard for undefined paths
+
 
       // { path: "*", element: <NotFound /> }, // 404 Page
     ],
@@ -53,6 +57,8 @@ export const salesmanRoutes = [
       { icon: <CircleStackIcon {...icon} />, name: "Collections", path: "/collections", element: <Collection /> },
       { icon: <UserCircleIcon {...icon} />, name: "Profile", path: "/profile", element: <AdminProfile /> },
       // { path: "*", element: <NotFound /> }, // 404 Page
+
+      { path: "*", element: <Navigate to="/dashboard" /> }, // Redirect to dashboard for undefined paths
     ],
   },
 ];
@@ -65,6 +71,8 @@ export const customerRoutes = [
       { icon: <CreditCardIcon {...icon} />, name: "Payments", path: "/payments", element: <PaymentVerify /> },
       { icon: <UserCircleIcon {...icon} />, name: "Profile", path: "/profile", element: <AdminProfile /> },
       // { path: "*", element: <NotFound /> }, // 404 Page
+
+      { path: "*", element: <Navigate to="/dashboard" /> }, // Redirect to dashboard for undefined paths
     ],
   },
 ];

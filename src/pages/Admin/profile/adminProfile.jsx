@@ -6,7 +6,7 @@ import {
     Button,
 } from "@material-tailwind/react";
 import { PencilIcon } from "@heroicons/react/24/solid";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { TextField } from "@mui/material";
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
@@ -15,6 +15,8 @@ import { toast } from 'react-toastify';
 import { resetPassword } from "@/store/action/auth.action";
 import { editCustomer } from "@/store/action/customer.action";
 import { addCountryCode } from '@/utils/addCountryCode';
+import { whatsappData } from "@/store/action/whatsapp.action";
+import WhatsAppSettings from "@/components/whatsappSettings";
 
 export function AdminProfile() {
     const [isEditingPersonal, setIsEditingPersonal] = useState(false);
@@ -24,6 +26,16 @@ export function AdminProfile() {
     const userData = useSelector((state) => state.authReducer?.user?.user);
 
     const dispatch = useDispatch();
+
+
+
+    useEffect(() => {
+        const fetchData = async () => {
+            await dispatch(whatsappData());
+        };
+
+        fetchData();
+    }, []); // Empty dependency array ensures it runs only once when the component mounts.
 
     // Validation schema for Formik
     const validationSchema = Yup.object({
@@ -151,7 +163,7 @@ export function AdminProfile() {
                         </div>
 
                     </div>
-                    <div className="mb-12 grid gap-12 px-4 lg:grid-cols-2 xl:grid-cols-2">
+                    <div className="mb-12 grid gap-12 px-4 lg:grid-cols-2 xl:grid-cols-3">
 
                         <div>
                             <div className="flex items-center">
@@ -206,7 +218,7 @@ export function AdminProfile() {
                                             helperText={formikAdmin.touched.email && formikAdmin.errors.email}
                                         />
                                         <Button type="submit" variant="contained" color="primary">
-                                           {loader ? "Loading..." : "Save Changes"} 
+                                            {loader ? "Loading..." : "Save Changes"}
                                         </Button>
                                     </>
                                 ) : (
@@ -224,7 +236,10 @@ export function AdminProfile() {
                                 )}
                             </form>
                         </div>
+                        <div>
+                            {userData.role === "admin" && <WhatsAppSettings />}
 
+                        </div>
                         <div>
                             <Typography variant="h6" color="blue-gray" className="mb-3">
                                 Reset Password Settings
@@ -276,7 +291,10 @@ export function AdminProfile() {
                                 </Button>
                             </form>
                         </div>
+
+
                     </div>
+
                 </CardBody>
             </Card>
         </>
