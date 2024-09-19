@@ -41,7 +41,7 @@ export function DashboardNavbar() {
 
 
 
-  const userEmail = useSelector((state) => state.authReducer.user.user.email);
+
   const UserData = useSelector((state) => state.authReducer.user.user.role);
   const UserID = useSelector((state) => state.authReducer.user.user._id);
 
@@ -120,7 +120,11 @@ export function DashboardNavbar() {
     }
   };
 
-  
+
+  const handleProfile = async () => {
+    navigate(UserData === "admin" ? `/${UserData}/setting` : `/${UserData}/profile`);
+  };
+
 
   return (
     <Navbar
@@ -170,18 +174,18 @@ export function DashboardNavbar() {
               </IconButton>
             </MenuHandler>
             <MenuList className="w-max border-0">
-              <MenuItem>
+              <MenuItem onClick={handleProfile}>
                 <Typography
-                  variant="small"
+                  variant="h5"
                   color="blue-gray"
                   className="font-normal"
                 >
-                  {userEmail}
+                  Profile
                 </Typography>
               </MenuItem>
               <MenuItem onClick={handleLogout}>
                 <Typography
-                  variant="small"
+                  variant="h6"
                   color="blue-gray"
                   className="font-normal"
                 >
