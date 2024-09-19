@@ -168,10 +168,7 @@ const EditCollectionDialog = ({ open, onClose, collectionData }) => {
         />
       </DialogContent>
       <DialogActions>
-        <Button onClick={onClose} color="secondary" variant="outlined">
-          Cancel
-        </Button>
-
+       
         <Button onClick={formik.handleSubmit} color="primary" variant="contained">
           {formik.isSubmitting ? (
             <CircularProgress size={24} style={{ color: '#fff' }} />
@@ -179,7 +176,7 @@ const EditCollectionDialog = ({ open, onClose, collectionData }) => {
             'Update'
           )}
         </Button>
-
+        <Button onClick={onClose} color="secondary" variant="outlined">Cancel</Button>
       </DialogActions>
     </Dialog>
   );

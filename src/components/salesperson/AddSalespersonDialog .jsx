@@ -25,7 +25,7 @@ const validationSchema = Yup.object({
   email: Yup.string()
     .email('Invalid email format')
     .matches(/^[^\s@]+@[^\s@]+\.(com)$/, 'Email must end with .com')
- ,
+  ,
   mobile: Yup.string()
     .required('Mobile number is required')
     .matches(/^\d{10}$/, 'Mobile number must be exactly 10 digits and only numeric')
@@ -132,7 +132,7 @@ const AddSalespersonDialog = ({ open, onClose }) => {
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
             fullWidth
-       
+
             error={formik.touched.email && Boolean(formik.errors.email)}
             helperText={formik.touched.email && formik.errors.email}
           />
@@ -189,13 +189,7 @@ const AddSalespersonDialog = ({ open, onClose }) => {
         </form>
       </DialogContent>
       <DialogActions>
-        <Button onClick={onClose} style={{
-          backgroundColor: 'green', // Adjust as needed
-          color: "#fff"
-        }}
-        >
-          Cancel
-        </Button>
+
         <Button
           type="submit"
           onClick={formik.handleSubmit}
@@ -211,7 +205,9 @@ const AddSalespersonDialog = ({ open, onClose }) => {
           ) : (
             'Add'
           )}
+
         </Button>
+        <Button onClick={onClose} color="secondary" variant="outlined">Cancel</Button>
       </DialogActions>
     </Dialog>
   );

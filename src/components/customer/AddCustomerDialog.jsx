@@ -188,12 +188,6 @@ const AddCustomerDialog = ({ open, onClose }) => {
         </form>
       </DialogContent>
       <DialogActions>
-        <Button onClick={onClose} style={{
-          backgroundColor: 'green', // Adjust as needed
-          color: "#fff"
-        }}>
-          Cancel
-        </Button>
         <Button
           type="submit"
           onClick={formik.handleSubmit}
@@ -210,6 +204,7 @@ const AddCustomerDialog = ({ open, onClose }) => {
             'Add'
           )}
         </Button>
+        <Button onClick={onClose} color="secondary" variant="outlined">Cancel</Button>
       </DialogActions>
     </Dialog>
   );

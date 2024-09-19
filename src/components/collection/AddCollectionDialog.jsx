@@ -160,9 +160,7 @@ const AddCollectionDialog = ({ open, onClose }) => {
         </form>
       </DialogContent>
       <DialogActions>
-        <Button onClick={onClose} color="secondary" variant="outlined">
-          Cancel
-        </Button>
+        
         <Button
           type="submit"
           onClick={formik.handleSubmit}
@@ -177,6 +175,7 @@ const AddCollectionDialog = ({ open, onClose }) => {
             'Add'
           )}
         </Button>
+        <Button onClick={onClose} color="secondary" variant="outlined">Cancel</Button>
       </DialogActions>
     </Dialog>
   );

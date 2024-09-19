@@ -127,9 +127,7 @@ const EditAddressDialog = ({ open, onClose, addressId }) => {
         </form>
       </DialogContent>
       <DialogActions>
-        <Button onClick={onClose} color="secondary" variant="outlined">
-          Cancel
-        </Button>
+
         <Button
           type="submit"
           onClick={formik.handleSubmit}
@@ -144,6 +142,7 @@ const EditAddressDialog = ({ open, onClose, addressId }) => {
             'Update'
           )}
         </Button>
+        <Button onClick={onClose} color="secondary" variant="outlined">Cancel</Button>
       </DialogActions>
     </Dialog>
   );
