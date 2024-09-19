@@ -18,6 +18,7 @@ import Pagination from '@/components/pagination/pagination';
 import { formatDate, formatTime } from '@/components/date/DateFormat';
 import { TextareaAutosize } from '@mui/material';
 import { formatIndianCurrency } from '@/utils/formatCurrency';
+import { MagnifyingGlassIcon } from '@heroicons/react/24/outline';
 
 const PAGE_SIZE = 10;
 
@@ -114,13 +115,16 @@ const PaymentVerify = () => {
         </CardHeader>
 
         <div className="px-6 py-4 flex max-sm:justify-center md:justify-end">
-          <input
-            type="text"
-            placeholder="Search..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="p-2 border border-gray-300 rounded"
-          />
+        <div class="relative flex items-center">
+        <MagnifyingGlassIcon className="absolute w-5 h-5 top-2.5 left-2.5 text-slate-600" />
+        <input
+          class="w-full bg-transparent text-sm border border-slate-800 rounded-md pl-10 pr-3 py-2 transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-300"
+          type="text"
+          placeholder="Search..."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+        />
+      </div>
         </div>
         <CardBody className="overflow-x-auto px-0 pt-0 pb-2">
           {currentData.length === 0 ? (

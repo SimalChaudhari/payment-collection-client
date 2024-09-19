@@ -84,7 +84,7 @@ export function AdminProfile() {
             email: Yup.string()
                 .email('Invalid email format')
                 .matches(/^[^\s@]+@[^\s@]+\.(com)$/, 'Email must end with .com')
-                .required('Email is required')
+            ,
         }),
         onSubmit: async (values) => {
             const user = {
@@ -212,9 +212,11 @@ export function AdminProfile() {
                                         <Typography variant="body2" className="mb-2">
                                             <strong>Mobile:</strong> {addCountryCode(formikAdmin?.values?.mobile)}
                                         </Typography>
-                                        <Typography variant="body2" className="mb-2">
-                                            <strong>Email:</strong> {formikAdmin.values.email}
-                                        </Typography>
+                                        {formikAdmin.values.email &&
+                                            <Typography variant="body2" className="mb-2">
+                                                <strong>Email:</strong> {formikAdmin.values.email}
+                                            </Typography>
+                                        }
                                     </>
                                 )}
                             </form>

@@ -16,6 +16,7 @@ import { FaDownload } from 'react-icons/fa';
 import * as XLSX from 'xlsx';
 import { formatDate } from '@/components/date/DateFormat';
 import { formatIndianCurrency } from '@/utils/formatCurrency';
+import { MagnifyingGlassIcon } from '@heroicons/react/24/outline';
 
 const PAGE_SIZE = 10;
 
@@ -215,13 +216,16 @@ const Report = () => {
             </div>
           </div>
 
+          <div class="relative flex items-center">
+          <MagnifyingGlassIcon className="absolute w-5 h-5 top-2.5 left-2.5 text-slate-600" />
           <input
+            class="w-full bg-transparent text-sm border border-slate-800 rounded-md pl-10 pr-3 py-2 transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-300"
             type="text"
             placeholder="Search..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="p-2 border border-gray-300 rounded"
           />
+        </div>
         </div>
 
         <CardBody className="overflow-x-auto px-0 pt-0 pb-2">
