@@ -22,7 +22,7 @@ export function AdminProfile() {
     const [isEditingPersonal, setIsEditingPersonal] = useState(false);
     const [loader, setIsLoader] = useState(false);
 
-    const emailData = useSelector((state) => state.authReducer?.user?.user?.email);
+    const emailData = useSelector((state) => state.authReducer?.user?.user?.mobile);
     const userData = useSelector((state) => state.authReducer?.user?.user);
 
     const dispatch = useDispatch();
@@ -68,23 +68,6 @@ export function AdminProfile() {
             }
         },
     });
-
-
-    const handleProfileChange = (e) => {
-        setProfileInfo({
-            ...profileInfo,
-            [e.target.name]: e.target.value
-        });
-    };
-
-
-
-    const handlePersonalInfoSubmit = (e) => {
-        e.preventDefault();
-        // Handle personal information update logic here
-        toast.success('Personal information updated');
-        setIsEditingPersonal(false);
-    };
 
     const formikAdmin = useFormik({
         initialValues: {
