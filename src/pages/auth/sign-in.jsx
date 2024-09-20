@@ -67,7 +67,7 @@ export function SignIn() {
                     name="mobile"
                     as={Input}
                     size="lg"
-                    placeholder="name@mail.com"
+                    placeholder="enter mobile number"
                     type="mobile"
                     className="!border-t-blue-gray-200 focus:!border-t-gray-900"
                   />
